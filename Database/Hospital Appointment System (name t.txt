@@ -1,0 +1,41 @@
+Hospital Appointment System (name to be chosen pa)
+General Features:
+- 2 users, patients and hospital staff
+- GUI
+- Login System
+
+Patient Features
+- Each patient can see their own history (doctor, diagnosis, prescribed meds, date)
+- Patient can choose specialized doctors (opthalmologists, pediatricians, pulmonologist etc.) and specific doctors (will go to request logs)
+
+Staff Features
+- Patient history (Has to search for name, ALL CAPS)
+- Ability to accept and mmodify appointment dates and time
+
+
+database hospital_appointment_system
+patient_table
+(patient_code (pri), lastname, firstname, birthday, sex, contact_num, address)
+
+doctor_table
+(doctor_code (pri), lastname, firstname, specialty, sex)
+
+meds
+(meds_code (pri), name)
+
+prescription
+(meds_code (for), patient_code (for), dosage, frequency)
+
+patient history
+(patient_history_code (pri), patient_code (for), doctor_code (for), diagnosis, prescription(for), date)
+
+
+appointment_request_log
+(apt_req_code (pri), patient_code (for), doctor_code (for))
+
+appointments_log
+(apt_req_code (for), patient_code (for), doctor_code (for), date, time)
+
+
+
+
