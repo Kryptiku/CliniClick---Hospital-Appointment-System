@@ -1,1 +1,1 @@
-# CliniClick---Hospital-Appointment-System
+# CliniClick-Hospital-Appointment-System
