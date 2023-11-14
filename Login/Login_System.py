@@ -41,7 +41,7 @@ def register_user():
     elif password_info == "":
         error()
     else:
-        sql = "insert into login values(%s,%s)"
+        sql = "insert into patienttbl (patient_username, patient_password) values (%s,%s)"
         t = (username_info, password_info)
         mycur.execute(sql, t)
         db.commit()
@@ -120,7 +120,7 @@ def failed():
 def login_varify():
     user_varify = username_varify.get()
     pas_varify = password_varify.get()
-    sql = "select * from login where user = %s and password = %s"
+    sql = "select * from patienttbl where patient_username = %s and patient_password = %s"
     mycur.execute(sql,[(user_varify),(pas_varify)])
     results = mycur.fetchall()
     if results:
