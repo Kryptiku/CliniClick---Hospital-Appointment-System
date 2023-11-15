@@ -66,9 +66,13 @@ def register_user():
         mycur.execute("select patient_code from patienttbl")
         mycur.fetchall()
         conv_rowcount = str(mycur.rowcount + 1)
+        value = "00000000" 
+        conv_rowcount = str(conv_rowcount)
+        temp = len(conv_rowcount)
+        modified_value = value[:-temp]
         db.commit()
         sql = "insert into patienttbl values (%s, %s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        t = ("PA" + conv_rowcount, lastname_info, firstname_info, middlename_info, birthdate_info, sex_info, contact_info, address_info, username_info, password_info)
+        t = ("PA" + modified_value + conv_rowcount, lastname_info, firstname_info, middlename_info, birthdate_info, sex_info, contact_info, address_info, username_info, password_info)
         mycur.execute(sql, t)
         db.commit()
         Label(root1, text="").pack()

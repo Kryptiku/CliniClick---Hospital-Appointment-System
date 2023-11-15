@@ -23,5 +23,8 @@ print("DB Loaded")
 
 mycur.execute("select patient_code from patienttbl")
 mycur.fetchall()
+value = "00000000" 
 conv_rowcount = str(mycur.rowcount)
-print('PA' + conv_rowcount)
+temp = len(conv_rowcount)
+modified_value = value[:-temp]
+print('PA' + modified_value + conv_rowcount)
