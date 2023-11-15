@@ -4,7 +4,7 @@ import mysql.connector
 import os
 import time
 
-#connecting to the database
+os.system('cls')
 db = mysql.connector.connect(host="localhost",user="root",passwd="",database="cliniclick_db")
 mycur = db.cursor()
 
@@ -34,15 +34,41 @@ def success():
     Button(succ, text="Ok", bg="grey", width=8, height=1, command=succ_destroy).pack()
 
 def register_user():
+    lastname_info = lastname.get()
+    firstname_info = firstname.get()
+    middlename_info = middlename.get()
+    birthdate_info = birthdate.get()
+    sex_info = sex.get()
+    contact_info = contact.get()
+    address_info = address.get()
     username_info = username.get()
     password_info = password.get()
-    if username_info == "":
+    
+    if lastname_info == "":
+        error()
+    elif firstname_info == "":
+        error()
+    elif middlename_info == "":
+        error()
+    elif birthdate_info == "":
+        error()
+    elif sex_info == "":
+        error()
+    elif contact_info == "":
+        error()
+    elif address_info == "":
+        error()
+    elif username_info == "":
         error()
     elif password_info == "":
-        error()
+        error()    
     else:
-        sql = "insert into patienttbl (patient_username, patient_password) values (%s,%s)"
-        t = (username_info, password_info)
+        mycur.execute("select patient_code from patienttbl")
+        mycur.fetchall()
+        conv_rowcount = str(mycur.rowcount + 1)
+        db.commit()
+        sql = "insert into patienttbl values (%s, %s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        t = ("PA" + conv_rowcount, lastname_info, firstname_info, middlename_info, birthdate_info, sex_info, contact_info, address_info, username_info, password_info)
         mycur.execute(sql, t)
         db.commit()
         Label(root1, text="").pack()
@@ -55,18 +81,62 @@ def registration():
     global root1
     root1 = Toplevel(root)
     root1.title("Registration Portal")
-    root1.geometry("300x250")
+    root1.geometry("300x800")
+    global lastname
+    global firstname
+    global middlename
+    global birthdate
+    global sex 
+    global contact
+    global address
     global username
     global password
     Label(root1,text="Register your account",bg="grey",fg="black",font="bold",width=300).pack()
+    lastname = StringVar()
+    firstname = StringVar()
+    middlename = StringVar()
+    birthdate = StringVar()
+    sex = StringVar()
+    contact = StringVar()
+    address = StringVar()
     username = StringVar()
     password = StringVar()
+    
     Label(root1,text="").pack()
-    Label(root1,text="Username :",font="bold").pack()
+    Label(root1, text="Last Name :").pack()
+    Entry(root1, textvariable=lastname).pack()
+    
+    Label(root1, text="").pack()
+    Label(root1,text="First Name :").pack()
+    Entry(root1,textvariable=firstname).pack()
+    
+    Label(root1, text="").pack()
+    Label(root1,text="Middle Name :").pack()
+    Entry(root1,textvariable=middlename).pack()
+    
+    Label(root1,text="Birth Date :").pack()
+    Entry(root1,textvariable=birthdate).pack()
+    Label(root1, text="").pack()
+    
+    Label(root1,text="Sex :").pack()
+    Entry(root1,textvariable=sex).pack()
+    Label(root1, text="").pack()
+    
+    Label(root1,text="Contact Number :").pack()
+    Entry(root1,textvariable=contact).pack()
+    Label(root1, text="").pack()
+    
+    Label(root1,text="Address :").pack()
+    Entry(root1,textvariable=address).pack()
+    Label(root1, text="").pack()
+    
+    Label(root1,text="Username :").pack()
     Entry(root1,textvariable=username).pack()
+    
     Label(root1, text="").pack()
     Label(root1, text="Password :").pack()
     Entry(root1, textvariable=password,show="*").pack()
+    
     Label(root1, text="").pack()
     Button(root1,text="Register",bg="red",command=register_user).pack()
 
