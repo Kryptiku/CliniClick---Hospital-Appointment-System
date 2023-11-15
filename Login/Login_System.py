@@ -172,13 +172,22 @@ def fail_destroy():
     fail.destroy()
 
 def logged():
+    new_user = str(username_varify.get())
+    mycur.execute("select patient_lastname from patienttbl where patient_username = " + "\'" + new_user + "\'")
+    result = mycur.fetchall()
+    
+    for row  in result :
+        patient_lastname = "".join(row)
+    
     global logg
     logg = Toplevel(root2)
     logg.title("Welcome")
-    logg.geometry("200x100")
-    Label(logg, text="Welcome {} ".format(username_varify.get()), fg="green", font="bold").pack()
+    logg.geometry("300x100")
+    Label(logg, text="Welcome {} ".format(patient_lastname + "!"), fg="green", font="bold").pack()
     Label(logg, text="").pack()
     Button(logg, text="Log-Out", bg="grey", width=8, height=1, command=logg_destroy).pack()
+    
+    
 
 
 def failed():
