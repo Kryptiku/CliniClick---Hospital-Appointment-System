@@ -28,7 +28,7 @@ def success():
     global succ
     succ = Toplevel(root1)
     succ.title("Success")
-    succ.geometry("200x100")
+    succ.geometry("200x200")
     Label(succ, text="Registration successful...", fg="green", font="bold").pack()
     Label(succ, text="").pack()
     Button(succ, text="Ok", bg="grey", width=8, height=1, command=succ_destroy).pack()
