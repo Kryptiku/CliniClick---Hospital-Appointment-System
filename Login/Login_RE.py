@@ -3,8 +3,8 @@ import mysql.connector
 import os
 
 os.system('cls')
-db = mysql.connector.connect(host = 'localhost', user = 'root', password = '', database = 'cliniclick_db')
-mycur = db.cursor
+db = mysql.connector.connect(host = 'localhost', user = 'root', passwd = '', database = 'cliniclick_db')
+mycur = db.cursor()
 
 def main_screen():
     global main
