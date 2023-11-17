@@ -209,13 +209,18 @@ def login_verify():
     else:
         failed()
 
-
 def main_screen():
     global root
     root = Tk()
+<<<<<<< Updated upstream
     root.title("Cliniclick")
     root.geometry("500x300")
     Label(root,text="Welcome to Cliniclick Log-In Portal",font="calibri 24",bg="grey",fg="black",width=300).pack()
+=======
+    root.title("Log-In Portal")
+    root.geometry("300x300")
+    Label(root,text="Welcome to Log-In Protal",font="bold",bg="grey",fg="black",width=300).pack()
+>>>>>>> Stashed changes
     Label(root,text="").pack()
     Button(root,text="Log-In",width="8",height="1",bg="sky blue",font="bold",command=login).pack()
     Label(root,text="").pack()
