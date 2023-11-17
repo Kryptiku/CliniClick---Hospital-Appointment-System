@@ -73,7 +73,7 @@ def st_menu():
     mema_label = tk.Label(staff, text="")
     mema_label.pack()
 
-    aptreq_btn = tk.Button(staff, text='Appointment Requests', font=('bold', 18), bg='sky blue', command=st_blah)
+    aptreq_btn = tk.Button(staff, text='Appointment Requests', font=('bold', 18), bg='sky blue')
     aptreq_btn.pack(pady=10)
 
     aptacpt_btn = tk.Button(staff, text='Accepted Appointments', font=('bold', 18), bg='sky blue')
@@ -81,6 +81,7 @@ def st_menu():
 
     logout_btn = tk.Button(staff, text='Log-Out', bg='grey', width=8, height=1, command=logout)
     logout_btn.pack()
+
 
 def logout():
     staff.destroy()
