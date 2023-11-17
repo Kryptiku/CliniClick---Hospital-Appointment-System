@@ -85,5 +85,6 @@ def st_menu():
 def logout():
     staff.destroy()
     staff_login()
+    
 # Initialize the login window
 staff_login()
