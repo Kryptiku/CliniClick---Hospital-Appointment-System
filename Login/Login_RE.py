@@ -4,7 +4,7 @@ import os
 
 os.system('cls')
 db = mysql.connector.connect(host = 'localhost', user = 'root', password = '', database = 'cliniclick_db')
-mycur = db.cursor
+mycur = db.cursor()
 
 def main_screen():
     global main
@@ -25,23 +25,24 @@ def main_screen():
     main.mainloop()
 
 def login():
-    global username_verify, password_verify, login_main
+    for child in main.winfo_children():
+        child.destroy()
+    global username_verify, password_verify
     username_verify = tk.StringVar()
     password_verify = tk.StringVar()
-    login_main = tk.Toplevel()
     
-    login_main.title('Log-in Portal')
-    login_main.geometry('300x300')
-    login_label = tk.Label(login_main, text = 'Log-In Portal', bg = 'sky blue', fg = 'black', font = 'bold', width = 300)
+    main.title('Log-in Portal')
+    main.geometry('300x300')
+    login_label = tk.Label(main, text = 'Log-In Portal', bg = 'sky blue', fg = 'black', font = 'bold', width = 300)
     login_label.pack()
     
-    username_label = tk.Label(login_main, text = 'Username: ')
-    username_entry = tk.Entry(login_main, textvariable = username_verify)
+    username_label = tk.Label(main, text = 'Username: ')
+    username_entry = tk.Entry(main, textvariable = username_verify)
     
-    password_label = tk.Label(login_main, text = 'Password: ')
-    password_entry = tk.Entry(login_main, textvariable = password_verify, show = '*')
+    password_label = tk.Label(main, text = 'Password: ')
+    password_entry = tk.Entry(main, textvariable = password_verify, show = '*')
     
-    login_button = tk.Button(login_main, text = 'Log-In', bg='sky blue', command = login_verify)
+    login_button = tk.Button(main, text = 'Log-In', bg='sky blue', command = login_verify)
     
     username_label.pack(pady = 10)
     username_entry.pack()
@@ -62,7 +63,7 @@ def registration():
     global registration_main
     registration_main = tk.Toplevel(main)
     registration_main.title('Registration Portal')
-    registration_main.geometry('300x400')
+    registration_main.geometry()
     
     lastname = tk.StringVar()
     firstname = tk.StringVar()
@@ -74,7 +75,7 @@ def registration():
     username = tk.StringVar()
     password = tk.StringVar()   
     
-    title_label = tk.Label(registration_main, text='Register your account', bg='sky blue', fg='black', font='calibri', width=30)
+    title_label = tk.Label(registration_main, text='Register your account', bg='sky blue', fg='black', font='calibri', width = 50)
     title_label.grid(row=0, columnspan=2, pady=10)
 
     label_lastname = tk.Label(registration_main, text='Last Name:')
@@ -122,7 +123,7 @@ def registration():
     label_password.grid(row=9, column=0, sticky='e', pady=5, padx=5)
     entry_password.grid(row=9, column=1, pady=5, padx=5)
 
-    register_button = tk.Button(registration_main, text = 'Register', bg = 'sky blue', command = register_user)
+    register_button = tk.Button(registration_main, text = 'Register', bg = 'sky blue', command = register_success)
     register_button.grid(row=10, columnspan=2, pady=10)
 
     registration_main.mainloop()
@@ -152,23 +153,23 @@ def register_user():
     password_info = password.get()
     
     if lastname_info == '':
-        error()
+        incomplete_field_error()
     elif firstname_info == '':
-        error()
+        incomplete_field_error()
     elif middlename_info == '':
-        error()
+        incomplete_field_error()
     elif birthdate_info == '':
-        error()
+        incomplete_field_error()
     elif sex_info == '':
-        error()
+        incomplete_field_error()
     elif contact_info == '':
-        error()
+        incomplete_field_error()
     elif address_info == '':
-        error()
+        incomplete_field_error()
     elif username_info == '':
-        error()
+        incomplete_field_error()
     elif password_info == '':
-        error()    
+        incomplete_field_error()    
     else:
         mycur.execute('select patient_code from patienttbl')
         mycur.fetchall()
@@ -186,6 +187,9 @@ def register_user():
         registered()
 
 def logged_main():
+    for child in main.winfo_children():
+        child.destroy()
+        
     new_user = str(username_verify.get())
     mycur.execute('select patient_lastname from patienttbl where patient_username = ' + '\'' + new_user + '\'')
     result = mycur.fetchall()
@@ -193,45 +197,73 @@ def logged_main():
     for row  in result :
         patient_lastname = ''.join(row)
     
-    logged_main = tk.Toplevel(login_main)
-    logged_main.title('Welcome')
-    logged_main.geometry('300x100')
-    welcome_label = tk.Label(logged_main, text='Welcome {} '.format(patient_lastname + '!'), fg='green', font='bold')
-    logged_main_button = tk.Button(logged_main, text='Log-Out', bg='grey')
+    main.title('Welcome')
+    main.geometry('200x250')
+    welcome_label = tk.Label(main, text='Welcome {} '.format(patient_lastname + '!'), fg='green', font='bold')
+    appointment_button = tk.Button(main, text = 'Register Appointment', bg = 'sky blue', font = 'bold')
+    history_button = tk.Button(main, text = 'View History', bg = 'sky blue', font = 'bold')
+    prescription_button = tk.Button(main, text = 'View Prescrptions', bg = 'sky blue', font = 'bold')
+    log_out_button = tk.Button(main, text='Log-Out', bg='grey', command = logged_destroy)
     
-    welcome_label.pack()
-    logged_main_button.pack()
+    welcome_label.pack(pady = 10)
+    appointment_button.pack(pady = 10)
+    history_button.pack(pady = 10)
+    prescription_button.pack(pady = 10)
+    log_out_button.pack(pady = 10)
     
-    logged_main.mainloop()
+    main.mainloop()
     
 def login_failed():
-    failed_main = tk.Toplevel(login_main)
+    global failed_main
+    failed_main = tk.Toplevel(main)
     failed_main.title('Invalid')
     failed_main.geometry('200x100')
     
     error_label = tk.Label(failed_main, text='Invalid credentials', fg='red', font='bold')
-    ok_button = tk.Button(failed_main, text='Ok', bg='grey')
+    ok_button = tk.Button(failed_main, text='Ok', bg='grey', command = fail_destroy)
     
-    error_label.pack
-    ok_button.pack
+    error_label.pack()
+    ok_button.pack()
 
-def error():
+def incomplete_field_error():
+    global error
     error = tk.Toplevel(main)
     error.title('Error')
     error.geometry('200x100')
-    tk.Label(error,text='All fields are required..',fg='red',font='bold').pack()
-    tk.Label(error,text='').pack()
-    tk.Button(error,text='Ok',bg='grey').pack()
+    field_error_label = tk.Label(error, text = 'All fields are required', fg = 'red', font = 'bold')
+    ok_button = tk.Button(error, text = 'Ok',bg = 'grey', command = error_destroy)
+    
+    field_error_label.pack()
+    ok_button.pack()
 
-def registered():
+def register_success():
+    global registered
     registered = tk.Toplevel(registration_main)
     registered.title('Success')
-    registered.geometry('200x200')
-    tk.Label(registered, text='Registration successful...', fg='green', font='bold').pack()
-    tk.Label(registered, text='').pack()
-    tk.Button(registered, text='Ok', bg='grey').pack()
+    registered.geometry()
+    successful_label = tk.Label(registered, text='Registration successful!', fg='green', font='bold', width = 40)
+    ok_button = tk.Button(registered, text='Ok', bg='grey', command = registered_destroy)
+    
+    successful_label.pack()
+    ok_button.pack()
+    
+def error_destroy():
+    error.destroy()
+
+def registered_destroy():
+    registered.destroy()
+    registration_main.destroy()
+    
+def logged_destroy():
+    main.destroy()
+    main_screen()
+
+
+def fail_destroy():
+    failed_main.destroy()
        
 main_screen()
+
 
     
     
