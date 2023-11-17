@@ -123,7 +123,7 @@ def registration():
     label_password.grid(row=9, column=0, sticky='e', pady=5, padx=5)
     entry_password.grid(row=9, column=1, pady=5, padx=5)
 
-    register_button = tk.Button(registration_main, text = 'Register', bg = 'sky blue', command = register_success)
+    register_button = tk.Button(registration_main, text = 'Register', bg = 'sky blue', command = register_user)
     register_button.grid(row=10, columnspan=2, pady=10)
 
     registration_main.mainloop()
@@ -142,6 +142,7 @@ def login_verify():
         login_failed()
         
 def register_user():
+    
     lastname_info = lastname.get()
     firstname_info = firstname.get()
     middlename_info = middlename.get()
@@ -183,8 +184,7 @@ def register_user():
         t = ('PA' + modified_value + conv_rowcount, lastname_info, firstname_info, middlename_info, birthdate_info, sex_info, contact_info, address_info, username_info, password_info)
         mycur.execute(sql, t)
         db.commit()
-        tk.Label(registration_main, text='').pack()
-        registered()
+        register_success()
 
 def logged_main():
     for child in main.winfo_children():
@@ -198,7 +198,7 @@ def logged_main():
         patient_lastname = ''.join(row)
     
     main.title('Welcome')
-    main.geometry('200x250')
+    main.geometry('250x300')
     welcome_label = tk.Label(main, text='Welcome {} '.format(patient_lastname + '!'), fg='green', font='bold')
     appointment_button = tk.Button(main, text = 'Register Appointment', bg = 'sky blue', font = 'bold')
     history_button = tk.Button(main, text = 'View History', bg = 'sky blue', font = 'bold')
