@@ -42,7 +42,7 @@ def staff_login():
 def stlogin_verify():
     stun_verify = username_verify.get()
     stpw_verify = password_verify.get()
-    sql = "select * from stafftbl where staff_username = %s and staff_password = %s"
+    sql = "select * from stafftbl where binary staff_username = %s and staff_password = %s"
     mycur.execute(sql, [(stun_verify), (stpw_verify)])
     results = mycur.fetchall()
     if results:
