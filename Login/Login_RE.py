@@ -1,10 +1,14 @@
 import tkinter as tk
+from tkcalendar import *
 import mysql.connector
+from subprocess import call
+# from History import patient_history
 import os
 
 os.system('cls')
 db = mysql.connector.connect(host = 'localhost', user = 'root', password = '', database = 'cliniclick_db')
 mycur = db.cursor()
+
 
 def main_screen():
     global main
@@ -75,13 +79,13 @@ def registration():
     username = tk.StringVar()
     password = tk.StringVar()   
     
-    title_label = tk.Label(registration_main, text = 'Register your account', bg = 'sky blue', fg = 'black', font = 'calibri', width = 50)
-    title_label.grid(row=0, columnspan=2, pady=10)
+    title_label = tk.Label(registration_main, text = 'Register your account', bg = 'sky blue', fg = 'black', font = 'calibri', width = 35)
+    title_label.grid(row = 0, columnspan = 3, pady = 10, sticky = 'n')
 
     label_lastname = tk.Label(registration_main, text = 'Last Name:')
     entry_lastname = tk.Entry(registration_main, textvariable = lastname)
-    label_lastname.grid(row=1, column=0, sticky='e', pady=5, padx=5)
-    entry_lastname.grid(row=1, column=1, pady=5, padx=5)
+    label_lastname.grid(row = 1, column = 0, sticky = 'e', pady = 5, padx = 5)
+    entry_lastname.grid(row = 1, column = 1, pady  =5, padx = 5)
 
     label_firstname = tk.Label(registration_main, text = 'First Name:')
     entry_firstname = tk.Entry(registration_main, textvariable = firstname)
@@ -93,10 +97,13 @@ def registration():
     label_middlename.grid(row = 3, column = 0, sticky = 'e', pady = 5, padx = 5)
     entry_middlename.grid(row = 3, column = 1, pady = 5, padx = 5)
 
+    global entry_birthdate
     label_birthdate = tk.Label(registration_main, text = 'Birth Date: ')
     entry_birthdate = tk.Entry(registration_main, textvariable = birthdate)
+    button_birthdate = tk.Button(registration_main, text = 'Select Date', bg = 'sky blue', command = date_picker)
     label_birthdate.grid(row = 4, column = 0, sticky = 'e', pady = 5, padx = 5)
     entry_birthdate.grid(row = 4, column = 1, pady = 5, padx = 5)
+    button_birthdate.grid(row = 4, column = 2, sticky = 'w', padx = 5)
 
     label_sex = tk.Label(registration_main, text = 'Sex: ')
     entry_sex = tk.Entry(registration_main, textvariable = sex)
@@ -124,14 +131,14 @@ def registration():
     entry_password.grid(row = 9, column = 1, pady = 5, padx = 5)
 
     register_button = tk.Button(registration_main, text = 'Register', bg = 'sky blue', command = register_user)
-    register_button.grid(row = 10, columnspan = 2, pady = 10)
+    register_button.grid(row = 10, columnspan = 3, sticky = 's', pady = 10)
 
     registration_main.mainloop()
     
 def login_verify():
     user_verify = username_verify.get()
     pass_verify = password_verify.get()
-    sql = 'select * from patienttbl where patient_username = %s and patient_password = %s'
+    sql = 'select * from patienttbl where binary patient_username = %s and patient_password = %s'
     mycur.execute(sql,[(user_verify),(pass_verify)])
     results = mycur.fetchall()
     if results:
@@ -153,24 +160,9 @@ def register_user():
     username_info = username.get()
     password_info = password.get()
     
-    if lastname_info == '':
+    if lastname_info == '' or firstname_info == '' or middlename_info == '' or birthdate_info == '' or sex_info == '' or contact_info == '' or username_info == '' or password_info == '':
         incomplete_field_error()
-    elif firstname_info == '':
-        incomplete_field_error()
-    elif middlename_info == '':
-        incomplete_field_error()
-    elif birthdate_info == '':
-        incomplete_field_error()
-    elif sex_info == '':
-        incomplete_field_error()
-    elif contact_info == '':
-        incomplete_field_error()
-    elif address_info == '':
-        incomplete_field_error()
-    elif username_info == '':
-        incomplete_field_error()
-    elif password_info == '':
-        incomplete_field_error()    
+
     else:
         mycur.execute('select patient_code from patienttbl')
         mycur.fetchall()
@@ -199,11 +191,11 @@ def logged_main():
     
     main.title('Welcome')
     main.geometry('250x300')
-    welcome_label = tk.Label(main, text='Welcome {} '.format(patient_lastname + '!'), fg='green', font='bold')
-    appointment_button = tk.Button(main, text = 'Register Appointment', bg = 'sky blue', font = 'bold')
-    history_button = tk.Button(main, text = 'View History', bg = 'sky blue', font = 'bold')
+    welcome_label = tk.Label(main, text = 'Welcome {} '.format(patient_lastname + '!'), fg = 'green', font = 'bold')
+    appointment_button = tk.Button(main, text = 'Register Appointment', bg = 'sky blue', font = 'bold', command = appointment)
+    history_button = tk.Button(main, text = 'View History', bg = 'sky blue', font = 'bold', command = history)
     prescription_button = tk.Button(main, text = 'View Prescrptions', bg = 'sky blue', font = 'bold')
-    log_out_button = tk.Button(main, text='Log-Out', bg='grey', command = logged_destroy)
+    log_out_button = tk.Button(main, text = 'Log-Out', bg = 'grey', command = logged_destroy)
     
     welcome_label.pack(pady = 10)
     appointment_button.pack(pady = 10)
@@ -246,7 +238,21 @@ def register_success():
     
     successful_label.pack()
     ok_button.pack()
-    
+
+def date_picker():
+    global calendar, calendar_main
+    calendar_main = tk.Toplevel(registration_main)
+    calendar_main.title('Select Date')
+    calendar_main.geometry()
+    calendar = Calendar(calendar_main, selectmode = 'day',date_pattern = 'y-mm-dd')
+    calendar.pack(pady = 5, padx = 10)
+
+    calendar_button = tk.Button(calendar_main, text = 'Confirm', bg = 'sky blue', command = lambda: [date_entry (calendar.get_date()), calendar_destroy()])
+    calendar_button.pack(pady = 5)
+
+def calendar_destroy():
+    calendar_main.destroy()
+        
 def error_destroy():
     error.destroy()
 
@@ -258,9 +264,37 @@ def logged_destroy():
     main.destroy()
     main_screen()
 
+def  date_entry(text):
+    entry_birthdate.delete(0, tk.END)
+    entry_birthdate.insert(0, text)
+    return
 
 def fail_destroy():
     failed_main.destroy()
+    
+def history():
+    call(['python', 'Login\History.py'])
+    
+def appointment():
+    for child in main.winfo_children():
+        child.destroy()
+    
+    user = str(username_verify.get())
+    mycur.execute('select patient_code from patienttbl where patient_username = ' + '\'' + user + '\'')
+    result = mycur.fetchall()
+    
+    for row  in result :
+        patient_code = ''.join(row)
+        
+    main.title('Appointment')
+    main.geometry()
+    
+    register_label = tk.Label(main, text = 'Appointment Registration', bg = 'sky blue', fg = 'black', font = 'bold', width = 50)
+    register_label.pack()
+    
+    patient_label = tk.Label(main, text = patient_code, bg = 'sky blue', fg = 'black', font = 'bold', width = 50)
+    patient_label.pack()
+    
        
 main_screen()
 
