@@ -82,7 +82,6 @@ def st_menu():
     logout_btn = tk.Button(staff, text='Log-Out', bg='grey', width=8, height=1, command=logout)
     logout_btn.pack()
 
-
 def logout():
     staff.destroy()
     staff_login()
