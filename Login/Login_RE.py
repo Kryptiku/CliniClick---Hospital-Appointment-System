@@ -36,7 +36,7 @@ def login():
     password_verify = tk.StringVar()
     
     main.title('Log-in Portal')
-    main.geometry('300x300')
+    # main.geometry('300x300')
     login_label = tk.Label(main, text = 'Log-In Portal', bg = 'sky blue', fg = 'black', font = 'bold', width = 300)
     login_label.pack()
     
@@ -190,7 +190,7 @@ def logged_main():
         patient_lastname = ''.join(row)
     
     main.title('Welcome')
-    main.geometry('250x300')
+    main.geometry('525x300')
     welcome_label = tk.Label(main, text = 'Welcome {} '.format(patient_lastname + '!'), fg = 'green', font = 'bold')
     appointment_button = tk.Button(main, text = 'Register Appointment', bg = 'sky blue', font = 'bold', command = appointment)
     history_button = tk.Button(main, text = 'View History', bg = 'sky blue', font = 'bold', command = history)
@@ -295,7 +295,8 @@ def appointment():
     patient_label = tk.Label(main, text = patient_code, bg = 'sky blue', fg = 'black', font = 'bold', width = 50)
     patient_label.pack()
     
-       
+        
+        
 main_screen()
 
 
