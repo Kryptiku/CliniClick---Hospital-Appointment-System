@@ -2,7 +2,7 @@ import tkinter as tk
 from tkcalendar import *
 import mysql.connector
 from subprocess import call
-# from History import patient_history
+import datetime
 import os
 
 os.system('cls')
@@ -36,7 +36,6 @@ def login():
     password_verify = tk.StringVar()
     
     main.title('Log-in Portal')
-    # main.geometry('300x300')
     login_label = tk.Label(main, text = 'Log-In Portal', bg = 'sky blue', fg = 'black', font = 'bold', width = 300)
     login_label.pack()
     
@@ -295,8 +294,32 @@ def appointment():
     patient_label = tk.Label(main, text = patient_code, bg = 'sky blue', fg = 'black', font = 'bold', width = 50)
     patient_label.pack()
     
-        
-        
+    appointment_button = tk.Button(main, text = 'Enter', bg = 'sky blue', fg = 'black', command = time_validation)
+    appointment_button.pack()
+    
+    global time
+    
+    time = tk.StringVar()
+    label_address = tk.Label(main, text='Time: ')
+    entry_address = tk.Entry(main, textvariable = time)
+    
+    label_address.pack()
+    entry_address.pack()
+    
+def time_validation():
+    global timeObject, new_time, formatted_time
+
+    new_time = str(time.get())
+    formatted_time = new_time.upper()
+    time_format = '%I:%M %p'
+    
+    try:
+        timeObject = datetime.datetime.strptime(formatted_time, time_format)
+        print(formatted_time)
+    
+    except ValueError:
+        print('Invalid DataType')
+
 main_screen()
 
 
