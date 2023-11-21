@@ -1,24 +1,14 @@
-import customtkinter
 import datetime
 import mysql.connector
-from Data_Holding import time
 
 db = mysql.connector.connect(host = 'localhost', user = 'root', password = '', database = 'cliniclick_db')
 mycur = db.cursor()
+        
+def time_validation(time):
 
-# with open("Updated Gui Import/Front_End.py") as f:
-#     exec(f.read())
-
-def patient_code():
-    x = 'y'
-    
-    
-def time_validation():
-
-    global timeObject,formatted_time, time
-
-    # new_time = str(time.get())
-    formatted_time = time.upper()
+    global timeObject,formatted_time, new_time
+    new_time = str(time)
+    formatted_time = new_time.upper()
     time_format = '%I:%M %p'
     
     try:
@@ -26,11 +16,24 @@ def time_validation():
         print(formatted_time)
 
     except ValueError:
-        
+        print(new_time)
         print('Error')
         
 
      
+
+
+
+
+
+
+
+
+
+
+
+
+
 # def validation_fail():
 #     failed_main = tk.Toplevel(main)
 #     failed_main.title('Invalid Entry')
@@ -41,4 +44,3 @@ def time_validation():
     
 #     error_label.pack()
 #     ok_button.pack()
-
