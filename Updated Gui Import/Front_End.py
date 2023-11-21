@@ -30,19 +30,14 @@ def appointment():
     date = customtkinter.StringVar()
     label_date = customtkinter.CTkLabel(main, text='Date: ')
     entry_date = customtkinter.CTkEntry(main, textvariable = date)
-    # date_button = customtkinter.CTkButton(main, text = 'Enter Date', command = date_validation)
     appointment_button = customtkinter.CTkButton(main, text = 'Enter', command = appointment_validation)
     
     label_date.pack()
     entry_date.pack()
-    # date_button.pack()
     appointment_button.pack()
     main.mainloop()
     
 def appointment_validation():
     be.appointment_validation(time.get(), date.get())
-    # be.date_validation(date.get())
-# def date_validation():
-    
-       
+           
 appointment()
