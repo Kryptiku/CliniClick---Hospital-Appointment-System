@@ -246,12 +246,13 @@ def date_picker():
     calendar = Calendar(calendar_main, selectmode = 'day',date_pattern = 'y-mm-dd')
     calendar.pack(pady = 5, padx = 10)
 
-    calendar_button = tk.Button(calendar_main, text = 'Confirm', bg = 'sky blue', command = lambda: [date_entry (calendar.get_date()), calendar_destroy()])
+    calendar_button = tk.Button(calendar_main, text = 'Confirm', bg = 'sky blue', command = lambda: [birthdate_entry (calendar.get_date()), calendar_destroy()])
     calendar_button.pack(pady = 5)
 
 def calendar_destroy():
     calendar_main.destroy()
         
+
 def error_destroy():
     error.destroy()
 
@@ -263,7 +264,7 @@ def logged_destroy():
     main.destroy()
     main_screen()
 
-def  date_entry(text):
+def  birthdate_entry(text):
     entry_birthdate.delete(0, tk.END)
     entry_birthdate.insert(0, text)
     return
@@ -297,14 +298,22 @@ def appointment():
     appointment_button = tk.Button(main, text = 'Enter', bg = 'sky blue', fg = 'black', command = time_validation)
     appointment_button.pack()
     
-    global time
-    
+    global time, date
     time = tk.StringVar()
-    label_address = tk.Label(main, text='Time: ')
-    entry_address = tk.Entry(main, textvariable = time)
     
-    label_address.pack()
-    entry_address.pack()
+    label_time = tk.Label(main, text='Time: ')
+    entry_time = tk.Entry(main, textvariable = time)
+    
+    label_time.pack()
+    entry_time.pack()
+    
+    
+    date = tk.StringVar()
+    label_date = tk.Label(main, text='Date: ')
+    entry_date = tk.Entry(main, textvariable = date)
+    
+    label_date.pack()
+    entry_date.pack()
     
 def time_validation():
     global timeObject, new_time, formatted_time
@@ -318,11 +327,17 @@ def time_validation():
         print(formatted_time)
     
     except ValueError:
-        print('Invalid DataType')
-
-main_screen()
-
-
+        validation_fail()
+        
+def validation_fail():
+    failed_main = tk.Toplevel(main)
+    failed_main.title('Invalid Entry')
+    failed_main.geometry()
     
+    error_label = tk.Label(failed_main, text = 'Incorrect Time', fg = 'red', font = 'bold', width = 20)
+    ok_button = tk.Button(failed_main, text = 'Ok', bg = 'grey', command = fail_destroy)
     
+    error_label.pack()
+    ok_button.pack()
     
+main_screen()   
