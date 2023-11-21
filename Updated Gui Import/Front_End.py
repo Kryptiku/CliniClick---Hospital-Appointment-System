@@ -1,20 +1,13 @@
 import customtkinter
+import Back_End as be
+# from Back_End import time_validation
 
 customtkinter.set_appearance_mode('System')
 customtkinter.set_default_color_theme('blue')
 main = customtkinter.CTk()
 
-# root.title('Tkinter Test')
-# root.geometry('600x350')
-
-# my_button = customtkinter.CTkButton(root, text = 'Enter')
-# my_button.pack()
-
-# root.mainloop()
-
 def appointment():
     patient_code = customtkinter.StringVar()
-    time_validation = customtkinter.StringVar()
     # for child in main.winfo_children():
     #     child.destroy()
     
@@ -26,27 +19,28 @@ def appointment():
     #     patient_code = ''.join(row)
         
     main.title('Appointment')
-    main.geometry()
+    main.geometry('525x200')
     my_font = customtkinter.CTkFont(family = 'bold')
     
-    register_label = customtkinter.CTkLabel(main, text = 'Appointment Registration', bg_color = 'sky blue', fg_color = 'black', font = my_font, width = 50)
+    time = customtkinter.StringVar()
+    
+    register_label = customtkinter.CTkLabel(main, text = 'Appointment Registration', font = my_font)
     register_label.pack()
     
-    patient_label = customtkinter.CTkLabel(main, text = patient_code, bg_color = 'sky blue', fg_color = 'black', font = customtkinter.CTkFont(family = 'bold'), width = 50)
+    patient_label = customtkinter.CTkLabel(main, text = 'Patient', font = my_font)
     patient_label.pack()
     
-    appointment_button = customtkinter.CTkButton(main, text = 'Enter', bg_color = 'sky blue', fg_color = 'black', command = time_validation)
-    appointment_button.pack()
-    
-    global time, date
-    time = customtkinter.StringVar()
+    appointment_button = customtkinter.CTkButton(main, text = 'Enter', command = be.time_validation)
+    # print_button = customtkinter.CTkButton(main, text = 'Test', command = print(time))
     
     label_time = customtkinter.CTkLabel(main, text='Time: ')
     entry_time = customtkinter.CTkEntry(main, textvariable = time)
     
+    be.time = str(time.get())
+    
     label_time.pack()
     entry_time.pack()
-    
+    appointment_button.pack()
     
     date = customtkinter.StringVar()
     label_date = customtkinter.CTkLabel(main, text='Date: ')

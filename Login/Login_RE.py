@@ -252,7 +252,7 @@ def date_picker():
 def calendar_destroy():
     calendar_main.destroy()
         
-        
+
 def error_destroy():
     error.destroy()
 
