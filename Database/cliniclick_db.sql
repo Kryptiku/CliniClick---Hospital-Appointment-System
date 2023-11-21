@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 14, 2023 at 04:19 PM
+-- Generation Time: Nov 21, 2023 at 07:18 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -32,6 +32,17 @@ CREATE TABLE `appointmentrequeststbl` (
   `patient_code` varchar(10) DEFAULT NULL,
   `doctor_code` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `appointmentrequeststbl`
+--
+
+INSERT INTO `appointmentrequeststbl` (`apt_req_code`, `patient_code`, `doctor_code`) VALUES
+('AR00000001', 'PA00000001', 'DO00000009'),
+('AR00000002', 'PA00000006', 'DO00000006'),
+('AR00000003', 'PA00000007', 'DO00000008'),
+('AR00000004', 'PA00000004', 'DO00000001'),
+('AR00000005', 'PA00000003', 'DO00000009');
 
 -- --------------------------------------------------------
 
@@ -168,6 +179,29 @@ CREATE TABLE `prescriptiontbl` (
   `frequency` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stafftbl`
+--
+
+CREATE TABLE `stafftbl` (
+  `staff_code` varchar(10) NOT NULL,
+  `staff_lastname` varchar(20) DEFAULT NULL,
+  `staff_firstname` varchar(20) DEFAULT NULL,
+  `staff_middlename` varchar(20) DEFAULT NULL,
+  `staff_username` varchar(15) DEFAULT NULL,
+  `staff_password` varchar(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `stafftbl`
+--
+
+INSERT INTO `stafftbl` (`staff_code`, `staff_lastname`, `staff_firstname`, `staff_middlename`, `staff_username`, `staff_password`) VALUES
+('ST00000001', 'Dimayuga', 'Kristel', 'Rivera', 'staff1', 'staff1'),
+('ST00000002', 'Mirabel', 'Kevin Hans Aurick', 'Santillana', 'staff2', 'staff2');
+
 --
 -- Indexes for dumped tables
 --
@@ -222,6 +256,12 @@ ALTER TABLE `prescriptiontbl`
   ADD KEY `patient_code` (`patient_code`);
 
 --
+-- Indexes for table `stafftbl`
+--
+ALTER TABLE `stafftbl`
+  ADD PRIMARY KEY (`staff_code`);
+
+--
 -- Constraints for dumped tables
 --
 
@@ -229,30 +269,16 @@ ALTER TABLE `prescriptiontbl`
 -- Constraints for table `appointmentrequeststbl`
 --
 ALTER TABLE `appointmentrequeststbl`
-  ADD CONSTRAINT `appointmentrequeststbl_ibfk_1` FOREIGN KEY (`patient_code`) REFERENCES `patienttbl1` (`patient_code`),
-  ADD CONSTRAINT `appointmentrequeststbl_ibfk_2` FOREIGN KEY (`doctor_code`) REFERENCES `doctortbl1` (`doctor_code`);
+  ADD CONSTRAINT `appointmentrequeststbl_ibfk_1` FOREIGN KEY (`patient_code`) REFERENCES `patienttbl` (`patient_code`),
+  ADD CONSTRAINT `appointmentrequeststbl_ibfk_2` FOREIGN KEY (`doctor_code`) REFERENCES `doctortbl` (`doctor_code`);
 
 --
 -- Constraints for table `appointmentstbl`
 --
 ALTER TABLE `appointmentstbl`
   ADD CONSTRAINT `appointmentstbl_ibfk_1` FOREIGN KEY (`apt_req_code`) REFERENCES `appointmentrequeststbl` (`apt_req_code`),
-  ADD CONSTRAINT `appointmentstbl_ibfk_2` FOREIGN KEY (`patient_code`) REFERENCES `patienttbl1` (`patient_code`),
-  ADD CONSTRAINT `appointmentstbl_ibfk_3` FOREIGN KEY (`doctor_code`) REFERENCES `doctortbl1` (`doctor_code`);
-
---
--- Constraints for table `patienthistorytbl`
---
-ALTER TABLE `patienthistorytbl`
-  ADD CONSTRAINT `patienthistorytbl_ibfk_1` FOREIGN KEY (`patient_code`) REFERENCES `patienttbl1` (`patient_code`),
-  ADD CONSTRAINT `patienthistorytbl_ibfk_2` FOREIGN KEY (`meds_code`) REFERENCES `prescriptiontbl` (`meds_code`);
-
---
--- Constraints for table `prescriptiontbl`
---
-ALTER TABLE `prescriptiontbl`
-  ADD CONSTRAINT `prescriptiontbl_ibfk_1` FOREIGN KEY (`meds_code`) REFERENCES `medstbl1` (`meds_code`),
-  ADD CONSTRAINT `prescriptiontbl_ibfk_2` FOREIGN KEY (`patient_code`) REFERENCES `patienttbl1` (`patient_code`);
+  ADD CONSTRAINT `appointmentstbl_ibfk_2` FOREIGN KEY (`patient_code`) REFERENCES `patienttbl` (`patient_code`),
+  ADD CONSTRAINT `appointmentstbl_ibfk_3` FOREIGN KEY (`doctor_code`) REFERENCES `doctortbl` (`doctor_code`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
