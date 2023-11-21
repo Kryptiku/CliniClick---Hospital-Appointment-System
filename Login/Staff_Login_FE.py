@@ -66,7 +66,7 @@ def st_menu():
     sbe.loggedin_user = str(username_verify.get())
     sbe.getname()
 
-    welcome_label = tk.Label(staff, text="Welcome {} ".format(sbe.staff_lastname + "!"), fg="green", font="bold")
+    welcome_label = tk.Label(staff, text="Welcome {} ".format(sbe.staff_lastname + ", " + sbe.staff_firstname + "!"), fg="green", font="bold")
     welcome_label.pack()
 
     mema_label = tk.Label(staff, text="")
@@ -82,6 +82,7 @@ def st_menu():
     logout_btn.pack()
 
 def stappreq_main():
+    sbe.getaptreq()
 
     staff.geometry('700x500')
 
@@ -92,9 +93,6 @@ def stappreq_main():
     
     mema_label = tk.Label(staff, text="")
     mema_label.pack()
-
-    mycur.execute("SELECT a.apt_req_code, p.patient_lastname, p.patient_firstname, d.doctor_lastname, d.doctor_firstname FROM appointmentrequeststbl a INNER JOIN patienttbl p ON a.patient_code = p.patient_code INNER JOIN doctortbl d ON a.doctor_code = d.doctor_code")
-    apt_req_data = mycur.fetchall()
 
     tree = ttk.Treeview(staff, show="headings")
     tree["columns"] = ("req_id", "ptntln", "ptntfn", "dctrln", "dctrfn")
@@ -109,7 +107,7 @@ def stappreq_main():
     for column in tree["columns"]:
         tree.column(column, anchor="w", width=125)
     
-    for row in apt_req_data:
+    for row in sbe.apt_req_data:
         tree.insert("", "end", values=row)
     tree.pack()
 

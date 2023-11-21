@@ -15,9 +15,19 @@ def stlogin_verify_test():
     results = mycur.fetchall()
 
 def getname():
-    global loggedin_user, staff_lastname
+    global loggedin_user, staff_lastname, staff_firstname
     mycur.execute("select staff_lastname from stafftbl where staff_username = " + "\'" + loggedin_user + "\'")
-    result = mycur.fetchall()
+    lnresult = mycur.fetchall()
 
-    for row in result:
+    for row in lnresult:
         staff_lastname = "".join(row)
+
+    mycur.execute("select staff_firstname from stafftbl where staff_username = " + "\'" + loggedin_user + "\'")
+    fnresult = mycur.fetchall()
+    for row in fnresult:
+        staff_firstname = "".join(row)
+
+def getaptreq():
+    global apt_req_data
+    mycur.execute("SELECT a.apt_req_code, p.patient_lastname, p.patient_firstname, d.doctor_lastname, d.doctor_firstname FROM appointmentrequeststbl a INNER JOIN patienttbl p ON a.patient_code = p.patient_code INNER JOIN doctortbl d ON a.doctor_code = d.doctor_code")
+    apt_req_data = mycur.fetchall()
