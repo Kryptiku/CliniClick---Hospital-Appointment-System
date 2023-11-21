@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 21, 2023 at 07:18 AM
+-- Generation Time: Nov 21, 2023 at 07:29 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -131,6 +131,14 @@ CREATE TABLE `patienthistorytbl` (
   `diagnosis_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `patienthistorytbl`
+--
+
+INSERT INTO `patienthistorytbl` (`patient_history_code`, `patient_code`, `doctor_code`, `diagnosis`, `meds_code`, `diagnosis_date`) VALUES
+('PH00000001', 'PA00000006', 'DO00000002', 'Common Colds', 'MD00000001', '2023-11-21'),
+('PH00000002', 'PA00000006', 'DO00000003', 'UTI', 'MD00000004', '2023-11-20');
+
 -- --------------------------------------------------------
 
 --
@@ -178,6 +186,14 @@ CREATE TABLE `prescriptiontbl` (
   `dosage` varchar(10) DEFAULT NULL,
   `frequency` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `prescriptiontbl`
+--
+
+INSERT INTO `prescriptiontbl` (`meds_code`, `patient_code`, `dosage`, `frequency`) VALUES
+('MD00000001', 'PA00000006', '250 mg', '3x a day'),
+('MD00000004', 'PA00000005', '50 g', '2x a week');
 
 -- --------------------------------------------------------
 
@@ -240,7 +256,8 @@ ALTER TABLE `medstbl`
 ALTER TABLE `patienthistorytbl`
   ADD PRIMARY KEY (`patient_history_code`),
   ADD KEY `patient_code` (`patient_code`),
-  ADD KEY `meds_code` (`meds_code`);
+  ADD KEY `meds_code` (`meds_code`),
+  ADD KEY `doctor_code` (`doctor_code`);
 
 --
 -- Indexes for table `patienttbl`
@@ -279,6 +296,20 @@ ALTER TABLE `appointmentstbl`
   ADD CONSTRAINT `appointmentstbl_ibfk_1` FOREIGN KEY (`apt_req_code`) REFERENCES `appointmentrequeststbl` (`apt_req_code`),
   ADD CONSTRAINT `appointmentstbl_ibfk_2` FOREIGN KEY (`patient_code`) REFERENCES `patienttbl` (`patient_code`),
   ADD CONSTRAINT `appointmentstbl_ibfk_3` FOREIGN KEY (`doctor_code`) REFERENCES `doctortbl` (`doctor_code`);
+
+--
+-- Constraints for table `patienthistorytbl`
+--
+ALTER TABLE `patienthistorytbl`
+  ADD CONSTRAINT `patienthistorytbl_ibfk_1` FOREIGN KEY (`patient_code`) REFERENCES `patienttbl` (`patient_code`),
+  ADD CONSTRAINT `patienthistorytbl_ibfk_2` FOREIGN KEY (`doctor_code`) REFERENCES `doctortbl` (`doctor_code`);
+
+--
+-- Constraints for table `prescriptiontbl`
+--
+ALTER TABLE `prescriptiontbl`
+  ADD CONSTRAINT `prescriptiontbl_ibfk_1` FOREIGN KEY (`meds_code`) REFERENCES `medstbl` (`meds_code`),
+  ADD CONSTRAINT `prescriptiontbl_ibfk_2` FOREIGN KEY (`patient_code`) REFERENCES `patienttbl` (`patient_code`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
