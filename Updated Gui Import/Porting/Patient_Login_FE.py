@@ -142,5 +142,5 @@ def patient_login_verify():
             break
     else:
         pbe.login_failed()
-
+        
 patient_main_screen()

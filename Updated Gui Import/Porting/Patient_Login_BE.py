@@ -29,8 +29,8 @@ def login_failed():
 def fail_destroy():
     failed_main.destroy()
     
-def register_user(lastname, firstname, middlename, birthdate, sex, contact,address, username, password):
-    
+def register_user(lastname, firstname, middlename, birthdate, sex, contact, address, username, password):
+    global lastname_info, firstname_info, middlename_info, birthdate_info, sex_info, contact_info, address_info, username_info, password_info, dateObject, new_date
     lastname_info = lastname
     firstname_info = firstname
     middlename_info = middlename
@@ -40,7 +40,20 @@ def register_user(lastname, firstname, middlename, birthdate, sex, contact,addre
     address_info = address
     username_info = username
     password_info = password
+     
+    new_date = str(birthdate_info)
+    date_format = '%Y-%m-%d'
+       
+    try:
+        dateObject = datetime.datetime.strptime(new_date, date_format)
+        print(new_date)
+        registration_validation()
+        
+    except ValueError:
+        print('Error')   
+        login_failed()
     
+def registration_validation():
     if lastname_info == '' or firstname_info == '' or middlename_info == '' or birthdate_info == '' or sex_info == '' or contact_info == '' or username_info == '' or password_info == '':
         login_failed()
 
@@ -57,4 +70,4 @@ def register_user(lastname, firstname, middlename, birthdate, sex, contact,addre
         t = ('PA' + modified_value + conv_rowcount, lastname_info, firstname_info, middlename_info, birthdate_info, sex_info, contact_info, address_info, username_info, password_info)
         mycur.execute(sql, t)
         db.commit()
-        print("Register Success")
+        print("Register Success")    
