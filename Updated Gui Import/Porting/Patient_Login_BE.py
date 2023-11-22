@@ -6,7 +6,7 @@ db = mysql.connector.connect(host = 'localhost', user = 'root', password = '', d
 mycur = db.cursor()
 
 def palogin_verify_test(username_verify, password_verify):
-    global results, results2, patient_lastname
+    global results, results2, patient_lastname, paun_verify
     paun_verify = username_verify
     papw_verify = password_verify
     sql = 'select * from patienttbl where binary patient_username = %s and patient_password = %s'
@@ -89,7 +89,6 @@ def dropdownobj():
     
     mycur.execute('select doctor_lastname, doctor_firstname from doctortbl order by doctor_lastname asc')
     doctor_size = mycur.fetchall()
-    print(specialist_options)
     
     doctor_options = []
    
@@ -113,8 +112,45 @@ def drop_down_update(choice):
         full_name = last_name + ', ' + first_name
         
         config_doctor_options.append(full_name)
-        print(config_doctor_options)
-
-    
         
-
+def appointment_registration(doctor_name):
+    global fromatted_doctor_name
+    delimiter = ','
+    fromatted_doctor_name = doctor_name.split(delimiter)[0]
+    
+    if fromatted_doctor_name == '':
+        login_failed()
+    
+    else:
+        mycur.execute('select apt_req_code from appointmentrequeststbl')
+        mycur.fetchall()
+        
+        conv_rowcount = str(mycur.rowcount + 1)
+        value = '00000000' 
+        conv_rowcount = str(conv_rowcount)
+        temp = len(conv_rowcount)
+        modified_value = value[:-temp]
+        db.commit()
+        
+        mycur.execute('select patient_code from patienttbl where patient_username = ' + '\'' + paun_verify + '\'')
+        patient_code = mycur.fetchall()
+        
+        for row  in patient_code:
+            new_patient_code = ''.join(row)
+            
+        db.commit()
+        
+        mycur.execute('select doctor_code from doctortbl where doctor_lastname = ' + '\'' + fromatted_doctor_name + '\'')
+        doctor_code = mycur.fetchall()
+        
+        for row  in doctor_code:
+            new_doctor_code = ''.join(row)
+        
+        db.commit()
+        
+        sql = 'insert into appointmentrequeststbl values (%s, %s, %s)'
+        t = ('AR' + modified_value + conv_rowcount, new_patient_code, new_doctor_code)
+        mycur.execute(sql, t)
+        db.commit()
+        print("Register Success") 
+        

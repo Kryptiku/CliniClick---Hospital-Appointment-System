@@ -9,7 +9,7 @@ def patient_main_screen():
     main_screen = tk.CTk()
     main_screen.title('Cliniclick')
     main_screen.geometry('525x200')
-    main_screen.attributes('-topmost', True)
+    # main_screen.attributes('-topmost', True)
     
     welcome_label = tk.CTkLabel(main_screen, text = 'Welcom to the Cliniclick Log-In Portal')
     login_button = tk.CTkButton(main_screen, text = 'Log-In', command = patient_login)
@@ -61,9 +61,10 @@ def patient_registration():
     global password
     global registration_main
     global entry_birthdate
+    global registration_main
     
     registration_main = tk.CTkToplevel(main_screen)
-    # registration_main.attributes('-top', True)
+    # registration_main.attributes('-topmost', True)
     registration_main.title('Registration Portal')
     registration_main.geometry()
     
@@ -130,7 +131,7 @@ def patient_registration():
     register_button = tk.CTkButton(registration_main, text = 'Register', command = register_verify)
     register_button.grid(row = 10, columnspan = 3, sticky = 's', pady = 10)
 
-    registration_main.mainloop()
+    # registration_main.mainloop()
 
 def register_verify():
     pbe.register_user(lastname.get(), firstname.get(), middlename.get(), birthdate.get(), sex.get(), contact.get(), address.get(), username.get(), password.get())
@@ -140,7 +141,7 @@ def patient_login_verify():
     if pbe.results:
         for i in pbe.results:
             login_main()
-            print('Success')
+            
             break
     else:
         pbe.login_failed()
@@ -181,15 +182,20 @@ def register_appointment():
     doctors_label = tk.CTkLabel(main_screen, text = 'Doctors:')
     doctors_dropdown = tk.CTkComboBox(main_screen, values = pbe.doctor_options, variable = '')
     
+    apply_button = tk.CTkButton(main_screen, text = 'Apply', command = appointment_registration)
+    
     specialists_label.pack()
     specialists_dropdown.pack()
     doctors_label.pack()
     doctors_dropdown.pack()
+    apply_button.pack(pady = 10)
     
 def drop_down_config(choice):
     placeholder_choice = choice
     pbe.drop_down_update(placeholder_choice)
     doctors_dropdown.configure(values = pbe.config_doctor_options)
-          
+    
+def appointment_registration():
+    pbe.appointment_registration(doctors_dropdown.get())
+           
 patient_main_screen()
-
