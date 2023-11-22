@@ -9,6 +9,7 @@ def patient_main_screen():
     main_screen = tk.CTk()
     main_screen.title('Cliniclick')
     main_screen.geometry('525x200')
+    main_screen.attributes('-topmost', True)
     
     welcome_label = tk.CTkLabel(main_screen, text = 'Welcom to the Cliniclick Log-In Portal')
     login_button = tk.CTkButton(main_screen, text = 'Log-In', command = patient_login)
@@ -31,7 +32,7 @@ def patient_login():
     password = tk.StringVar()
     
     main_screen.title('Log-In Portal')
-    
+    main_screen.geometry('525x225')
     login_label = tk.CTkLabel(main_screen, text = 'Log-In Portal')
     username_label = tk.CTkLabel(main_screen, text = 'Username: ')
     username_entry = tk.CTkEntry(main_screen, textvariable = username)
@@ -41,10 +42,10 @@ def patient_login():
     
     login_button = tk.CTkButton(main_screen, text = 'Log-In',command = patient_login_verify)
     
-    login_label.pack()
-    username_label.pack(pady = 10)
+    login_label.pack(pady = 10)
+    username_label.pack()
     username_entry.pack()
-    password_label.pack(pady = 10)
+    password_label.pack()
     password_entry.pack()
     login_button.pack(pady = 10)
     
@@ -61,8 +62,8 @@ def patient_registration():
     global registration_main
     global entry_birthdate
     
-    registration_main = tk.CTkToplevel()
-    registration_main.attributes('-topmost', True)
+    registration_main = tk.CTkToplevel(main_screen)
+    # registration_main.attributes('-top', True)
     registration_main.title('Registration Portal')
     registration_main.geometry()
     
@@ -138,9 +139,57 @@ def patient_login_verify():
     pbe.palogin_verify_test(username.get(), password.get())
     if pbe.results:
         for i in pbe.results:
+            login_main()
             print('Success')
             break
     else:
         pbe.login_failed()
         
+def login_main():
+    for child in main_screen.winfo_children():
+        child.destroy()
+        
+    main_screen.title('Welcome')
+    main_screen.geometry('525x300')
+    welcome_label = tk.CTkLabel(main_screen, text = 'Welcome {} '.format(pbe.patient_lastname + '!'))
+    appointment_button = tk.CTkButton(main_screen, text = 'Register Appointment', command = register_appointment)
+    history_button = tk.CTkButton(main_screen, text = 'View History')
+    prescription_button = tk.CTkButton(main_screen, text = 'View Prescrptions')
+    log_out_button = tk.CTkButton(main_screen, text = 'Log-Out')
+    
+    welcome_label.pack(pady = 10)
+    appointment_button.pack(pady = 10)
+    history_button.pack(pady = 10)
+    prescription_button.pack(pady = 10)
+    log_out_button.pack(pady = 10)
+    
+    main_screen.mainloop()
+
+def register_appointment():
+    global doctors_dropdown
+    for child in main_screen.winfo_children():
+        child.destroy()
+        
+    main_screen.title('Appointment Registration')
+    main_screen.geometry()
+    
+    pbe.dropdownobj()
+    
+    specialists_label = tk.CTkLabel(main_screen, text = 'Specialists:')
+    specialists_dropdown = tk.CTkComboBox(main_screen, values = pbe.specialist_options, variable = '', command = drop_down_config)
+    
+    doctors_label = tk.CTkLabel(main_screen, text = 'Doctors:')
+    doctors_dropdown = tk.CTkComboBox(main_screen, values = pbe.doctor_options, variable = '')
+    
+    specialists_label.pack()
+    specialists_dropdown.pack()
+    doctors_label.pack()
+    doctors_dropdown.pack()
+    
+def drop_down_config(choice):
+    placeholder_choice = choice
+    pbe.drop_down_update(placeholder_choice)
+    doctors_dropdown.configure(values = pbe.config_doctor_options)
+          
 patient_main_screen()
+
