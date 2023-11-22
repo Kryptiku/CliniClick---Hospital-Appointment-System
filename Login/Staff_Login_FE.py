@@ -1,45 +1,39 @@
-import tkinter as tk
+import customtkinter as tk
 from tkinter import ttk
-import mysql.connector
 import os
 import Staff_Login_BE as sbe
 
 os.system('cls')
-db = mysql.connector.connect(host="localhost", user="root", passwd="", database="cliniclick_db")
-mycur = db.cursor()
 
 def staff_login():
     global staff, username_verify, password_verify, username_entry, password_entry, loginfail_label
-    staff = tk.Tk()
+    staff = tk.CTk()
     staff.title('CliniClick Staff Log-in')
     staff.geometry('525x300')
+    my_font = ('bold', 18)
     
     username_verify = tk.StringVar()
     password_verify = tk.StringVar()
 
-    stlogin_label = tk.Label(staff, text='Staff Log-in Portal', bg='sky blue', fg='black', font=('bold', 18),width=525)
-    stlogin_label.pack()
-
-    mt_label = tk.Label(staff, text='')
-    mt_label.pack()
-
-    loginfail_label = tk.Label(staff, text='', fg='red', font=('bold'))
-    loginfail_label.pack(side='top')
-
-    username_label = tk.Label(staff, text='Username: ', font='bold')
-    username_entry = tk.Entry(staff, textvariable=username_verify)
-    username_label.pack()
-    username_entry.pack()
-
-    password_label = tk.Label(staff, text='Password: ', font='bold')
-    password_entry = tk.Entry(staff, textvariable=password_verify, show='*')
-    password_label.pack()
-    password_entry.pack()
+    stlogin_label = tk.CTkLabel(staff, text='Staff Log-in Portal', fg_color='black', width=525)
+    mt_label = tk.CTkLabel(staff, text='')
+    loginfail_label = tk.CTkLabel(staff, text='', font = my_font)
+    username_label = tk.CTkLabel(staff, text='Username: ')
+    username_entry = tk.CTkEntry(staff, textvariable=username_verify)
+    password_label = tk.CTkLabel(staff, text='Password: ')
+    password_entry = tk.CTkEntry(staff, textvariable=password_verify, show='*')
+    login_btn = tk.CTkButton(staff, text='Log in', command=stlogin_verify)
 
     sbe.username_verify = username_verify
     sbe.password_verify = password_verify
-
-    login_btn = tk.Button(staff, text='Log in', command=stlogin_verify, font=('bold', 18), bg='sky blue')
+    
+    stlogin_label.pack()
+    mt_label.pack()
+    loginfail_label.pack(side='top')
+    username_label.pack()
+    username_entry.pack()
+    password_label.pack()
+    password_entry.pack()
     login_btn.pack(pady=20)
 
     staff.mainloop()
@@ -52,12 +46,14 @@ def stlogin_verify():
             break
     else:
         stlogin_failed()
+        
 
 def stlogin_failed():
-    loginfail_label.config(text='Invalid Credentials. Please try again.')
+    loginfail_label.configure(text='Invalid Credentials. Please try again.')
     username_entry.delete(0, 'end'), password_entry.delete(0, 'end')
 
 def st_menu():
+    staff.geometry('525x300')
     for child in staff.winfo_children():
         child.destroy()
 
@@ -65,20 +61,17 @@ def st_menu():
 
     sbe.loggedin_user = str(username_verify.get())
     sbe.getname()
+    welcome_label = tk.CTkLabel(staff, text="Welcome {} ".format(sbe.staff_lastname + ", " + sbe.staff_firstname + "!"), fg_color="green")
+    mema_label = tk.CTkLabel(staff, text="")
+    aptreq_btn = tk.CTkButton(staff, text='Appointment Requests', command=stappreq_main)
+    aptacpt_btn = tk.CTkButton(staff, text='Accepted Appointments')
+    logout_btn = tk.CTkButton(staff, text='Log-Out', bg_color='grey', width=8, height=1, command=logout)
+    
 
-    welcome_label = tk.Label(staff, text="Welcome {} ".format(sbe.staff_lastname + ", " + sbe.staff_firstname + "!"), fg="green", font="bold")
     welcome_label.pack()
-
-    mema_label = tk.Label(staff, text="")
     mema_label.pack()
-
-    aptreq_btn = tk.Button(staff, text='Appointment Requests', font=('bold', 18), bg='sky blue', command=stappreq_main)
     aptreq_btn.pack(pady=10)
-
-    aptacpt_btn = tk.Button(staff, text='Accepted Appointments', font=('bold', 18), bg='sky blue')
     aptacpt_btn.pack(pady=10)
-
-    logout_btn = tk.Button(staff, text='Log-Out', bg='grey', width=8, height=1, command=logout)
     logout_btn.pack()
 
 def stappreq_main():
@@ -91,12 +84,19 @@ def stappreq_main():
 
     staff.title('Appointment Requests')
     
-    mema_label = tk.Label(staff, text="")
+    mema_label = tk.CTkLabel(staff, text="")
     mema_label.pack()
 
     tree = ttk.Treeview(staff, show="headings")
     tree["columns"] = ("req_id", "ptntln", "ptntfn", "dctrln", "dctrfn")
     
+    bg_color = staff._apply_appearance_mode(tk.ThemeManager.theme["CTkFrame"]["fg_color"])
+    text_color = staff._apply_appearance_mode(tk.ThemeManager.theme["CTkLabel"]["text_color"])
+
+    treestyle = ttk.Style()
+    treestyle.theme_use('default')
+    treestyle.configure("Treeview", background=bg_color, foreground=text_color, fieldbackground=bg_color, borderwidth=0)
+
     # Define column headings
     tree.heading("req_id", text="Request ID")
     tree.heading("ptntln", text="Patient Last Name")
@@ -111,19 +111,36 @@ def stappreq_main():
         tree.insert("", "end", values=row)
     tree.pack()
 
+    accept_label = tk.CTkLabel(staff, text = 'Accept appointment: ')
+    accept_label.pack(pady = 5)
+    
+    placeholder_var = tk.StringVar(value="")
+    sbe.dropdownobj()
+    options = tk.CTkComboBox(master = staff, values = sbe.ar_options, variable = placeholder_var, command=changear_entries)
+    options.place(relx=0.5, rely=0.5, anchor = 'center')
+    options.pack()
 
-    # aptreq_btn = tk.Button(staff, text='Appointment Requests', font=('bold', 18), bg='sky blue')
-    # aptreq_btn.pack(pady=10)
+    global choice_label
+    choice_label = tk.CTkLabel(staff, text = "")
+    choice_label.pack()
 
-    # aptacpt_btn = tk.Button(staff, text='Accepted Appointments', font=('bold', 18), bg='sky blue')
-    # aptacpt_btn.pack(pady=10)
+    # to do:
+    # create dropdown box, where staff can click on an apt_req_code, which copies it on to the main window
+    # then it copies into the main window, then staff can enter a date and time.
+    # copy the apt_req_code, patient_code, doctor_code, date, time, into appointmentstbl
 
-    back_btn = tk.Button(staff, text='Back', bg='grey', width=8, height=1, command=st_menu)
+    back_btn = tk.CTkButton(staff, text='Back', bg_color='grey', width=8, height=1, command=st_menu)
     back_btn.pack(pady = 20)
 
 def logout():
     staff.destroy()
     staff_login()
+
+def changear_entries(choice):
+    sbe.choice = choice
+    sbe.changear_entries()
+    
+
 
 # Initialize the login window
 staff_login()
