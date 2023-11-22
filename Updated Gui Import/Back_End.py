@@ -1,7 +1,7 @@
 import customtkinter
 import datetime
 import mysql.connector
-from subprocess import call
+# from subprocess import call
 
 db = mysql.connector.connect(host = 'localhost', user = 'root', password = '', database = 'cliniclick_db')
 mycur = db.cursor()
