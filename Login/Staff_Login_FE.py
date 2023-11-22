@@ -1,5 +1,6 @@
 import customtkinter as tk
 from tkinter import ttk
+import tkinter
 import os
 import Staff_Login_BE as sbe
 
@@ -75,15 +76,12 @@ def st_menu():
     logout_btn.pack()
 
 def stappreq_main():
-    sbe.getaptreq()
-
-    staff.geometry('700x500')
-
     for child in staff.winfo_children():
-        child.destroy() 
-
-    staff.title('Appointment Requests')
+        child.destroy()
     
+    sbe.getaptreq()
+    staff.title('Appointment Requests')
+    staff.geometry('700x500')
     mema_label = tk.CTkLabel(staff, text="")
     mema_label.pack()
 
@@ -93,9 +91,9 @@ def stappreq_main():
     bg_color = staff._apply_appearance_mode(tk.ThemeManager.theme["CTkFrame"]["fg_color"])
     text_color = staff._apply_appearance_mode(tk.ThemeManager.theme["CTkLabel"]["text_color"])
 
-    treestyle = ttk.Style()
-    treestyle.theme_use('default')
-    treestyle.configure("Treeview", background=bg_color, foreground=text_color, fieldbackground=bg_color, borderwidth=0)
+    style = ttk.Style()
+    style.theme_use('default')
+    style.configure("Treeview", background=bg_color, foreground=text_color, fieldbackground=bg_color, borderwidth=0)
 
     # Define column headings
     tree.heading("req_id", text="Request ID")
@@ -114,9 +112,8 @@ def stappreq_main():
     accept_label = tk.CTkLabel(staff, text = 'Accept appointment: ')
     accept_label.pack(pady = 5)
     
-    placeholder_var = tk.StringVar(value="")
     sbe.dropdownobj()
-    options = tk.CTkComboBox(master = staff, values = sbe.ar_options, variable = placeholder_var, command=changear_entries)
+    options = tk.CTkComboBox(master = staff, values = sbe.ar_options, variable = "", command=changear_entries)
     options.place(relx=0.5, rely=0.5, anchor = 'center')
     options.pack()
 
@@ -124,9 +121,28 @@ def stappreq_main():
     choice_label = tk.CTkLabel(staff, text = "")
     choice_label.pack()
 
+    global time, date
+    time = tk.StringVar()
+    label_time = tk.CTkLabel(staff, text='Time (HH:MM AM/PM): ')
+    entry_time = tk.CTkEntry(staff, textvariable = time)
+
+    date = tk.StringVar()
+    label_date = tk.CTkLabel(staff, text='Date (YYYY-MM-DD): ')
+    entry_date = tk.CTkEntry(staff, textvariable = date)
+    
+    label_time.pack()
+    entry_time.pack()
+    label_date.pack()
+    entry_date.pack()
+
+    global aptaccepted_label
+    aptaccepted_label = tk.CTkLabel(staff, text = "")
+    aptaccepted_label.pack(pady = 10)
+    
+    acceptapt_btn = tk.CTkButton(staff, text = "Accept Appointment", command = verify_appointment)
+    acceptapt_btn.pack(pady = 10)
+
     # to do:
-    # create dropdown box, where staff can click on an apt_req_code, which copies it on to the main window
-    # then it copies into the main window, then staff can enter a date and time.
     # copy the apt_req_code, patient_code, doctor_code, date, time, into appointmentstbl
 
     back_btn = tk.CTkButton(staff, text='Back', bg_color='grey', width=8, height=1, command=st_menu)
@@ -137,10 +153,35 @@ def logout():
     staff_login()
 
 def changear_entries(choice):
-    sbe.choice = choice
+    global show_acptdapt
+    show_acptdapt = choice
+    sbe.choice = str(choice)
     sbe.changear_entries()
+    choice_label.configure(text = "Patient: " + sbe.ptntfn + " " + sbe.ptntln + "    ||    " + "Doctor: " + sbe.dctrfn + " " + sbe.dctrln)
     
+def verify_appointment():
+    sbe.acceptapt_validation(time.get(), date.get())
+    if sbe.error_time==True or sbe.error_date==True:
+        declineappointment()
+    else:
+        acceptappointment()
 
+def declineappointment():
+    global aptfail
+    aptfail = tk.CTkToplevel(staff)
+    aptfail.attributes('-top', True)
+    aptfail.title("Error!")
+    aptfail.geometry('200x200')
 
+    fail_message = tk.CTkLabel(aptfail, text = 'Failed to accept appointment. \nPlease check the inputted values', text_color = 'pink')
+    fail_message.pack(pady = 10)
+
+    okbtn = tk.CTkButton(aptfail, text = 'Okay', command=aptfail.destroy)
+    okbtn.pack(pady = 50)
+
+def acceptappointment():
+    sbe.acceptappointment()
+    aptaccepted_label.configure(text = "Appointment Accepted: " + show_acptdapt)
+    
 # Initialize the login window
 staff_login()
