@@ -47,7 +47,7 @@ def login():
     password_label = tk.Label(login_main, text = 'Password: ')
     password_entry = tk.Entry(login_main, textvariable = password_verify, show = '*')
     
-    login_button = tk.Button(login_main, text = 'Log-In', bg='sky blue', command = login_verify)
+    login_button = tk.Button(login_main, text = 'Log-In', bg='sky blue')
     
     username_label.pack(pady = 10)
     username_entry.pack()
