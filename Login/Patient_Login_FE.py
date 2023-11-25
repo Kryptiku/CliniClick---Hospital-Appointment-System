@@ -1,4 +1,5 @@
 import customtkinter as tk
+from tkinter import ttk
 import Patient_Login_BE as pbe
 
 tk.set_appearance_mode('System')
@@ -131,8 +132,6 @@ def patient_registration():
     register_button = tk.CTkButton(registration_main, text = 'Register', command = register_verify)
     register_button.grid(row = 10, columnspan = 3, sticky = 's', pady = 10)
 
-    # registration_main.mainloop()
-
 def register_verify():
     pbe.register_user(lastname.get(), firstname.get(), middlename.get(), birthdate.get(), sex.get(), contact.get(), address.get(), username.get(), password.get())
     
@@ -154,14 +153,12 @@ def login_main():
     main_screen.geometry('525x300')
     welcome_label = tk.CTkLabel(main_screen, text = 'Welcome {} '.format(pbe.patient_lastname + '!'))
     appointment_button = tk.CTkButton(main_screen, text = 'Register Appointment', command = register_appointment)
-    history_button = tk.CTkButton(main_screen, text = 'View History')
-    prescription_button = tk.CTkButton(main_screen, text = 'View Prescrptions')
+    history_button = tk.CTkButton(main_screen, text = 'View History and Prescriptions', command = patient_history)
     log_out_button = tk.CTkButton(main_screen, text = 'Log-Out')
     
     welcome_label.pack(pady = 10)
     appointment_button.pack(pady = 10)
     history_button.pack(pady = 10)
-    prescription_button.pack(pady = 10)
     log_out_button.pack(pady = 10)
     
     main_screen.mainloop()
@@ -197,5 +194,40 @@ def drop_down_config(choice):
     
 def appointment_registration():
     pbe.appointment_registration(doctors_dropdown.get())
-           
+    
+def patient_history():
+    for child in main_screen.winfo_children():
+        child.destroy()
+    
+    pbe.patient_history()
+    
+    main_screen.title('Appointment Requests')
+    main_screen.geometry('700x500')
+    mema_label = tk.CTkLabel(main_screen, text="")
+    mema_label.pack()
+
+    tree = ttk.Treeview(main_screen, show="headings")
+    tree["columns"] = ("dctrln", "dctrfn", "diag", 'med', "dsg", "freq")
+    
+    bg_color = main_screen._apply_appearance_mode(tk.ThemeManager.theme["CTkFrame"]["fg_color"])
+    text_color = main_screen._apply_appearance_mode(tk.ThemeManager.theme["CTkLabel"]["text_color"])
+
+    style = ttk.Style()
+    style.theme_use('default')
+    style.configure("Treeview", background=bg_color, foreground=text_color, fieldbackground=bg_color, borderwidth=0)
+
+    tree.heading("dctrln", text="Doctor Last Name")
+    tree.heading("dctrfn", text="Doctor First Name")
+    tree.heading("diag", text="Diagnosis")
+    tree.heading("med", text="Medication")
+    tree.heading("dsg", text="Dosage")
+    tree.heading("freq", text="Frenquency")
+    
+    for column in tree["columns"]:
+        tree.column(column, anchor="s", width=125)
+    
+    for row in pbe.pa_his_data:
+        tree.insert("", "end", values=row)
+    tree.pack()
+            
 patient_main_screen()

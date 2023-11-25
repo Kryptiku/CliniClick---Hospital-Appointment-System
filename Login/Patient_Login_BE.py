@@ -152,5 +152,15 @@ def appointment_registration(doctor_name):
         t = ('AR' + modified_value + conv_rowcount, new_patient_code, new_doctor_code)
         mycur.execute(sql, t)
         db.commit()
-        print("Register Success") 
+        print("Register Success")
         
+def patient_history():
+    global pa_his_data
+    mycur.execute('select patient_code from patienttbl where patient_username = ' + '\'' + paun_verify + '\'')
+    patient_code = mycur.fetchall()
+    
+    for row  in patient_code:
+            new_patient_code = ''.join(row)
+    
+    mycur.execute('select d.doctor_lastname, d.doctor_firstname, h.diagnosis, h.diagnosis_date, m.meds_name, p.dosage, p.frequency from patienthistorytbl h inner join doctortbl d on h.doctor_code = d.doctor_code inner join medstbl m on h.meds_code = m.meds_code inner join prescriptiontbl p on h.meds_code = p.meds_code where h.patient_code = ' + '\'' + new_patient_code + '\'')        
+    pa_his_data = mycur.fetchall()
