@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 21, 2023 at 07:29 AM
+-- Generation Time: Nov 25, 2023 at 05:04 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -55,8 +55,15 @@ CREATE TABLE `appointmentstbl` (
   `patient_code` varchar(10) NOT NULL,
   `doctor_code` varchar(10) NOT NULL,
   `apt_date` date DEFAULT NULL,
-  `apt_time` varchar(5) DEFAULT NULL
+  `apt_time` varchar(8) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `appointmentstbl`
+--
+
+INSERT INTO `appointmentstbl` (`apt_req_code`, `patient_code`, `doctor_code`, `apt_date`, `apt_time`) VALUES
+('AR00000001', 'PA00000001', 'DO00000009', '2023-01-02', '12:30 PM');
 
 -- --------------------------------------------------------
 
@@ -86,7 +93,7 @@ INSERT INTO `doctortbl` (`doctor_code`, `doctor_lastname`, `doctor_firstname`, `
 ('DO00000006', 'Rodriguez', 'Zoe Elizabeth', 'Aquino', 'Pediatrics', 'F'),
 ('DO00000007', 'Chen', 'Liam Christoph', 'Ramos', 'Gastroenterology', 'M'),
 ('DO00000008', 'Davis', 'Sophia Anne', 'Gonzales', 'Oncology', 'F'),
-('DO00000009', 'Martinez', ' Lucas', 'Jameson', 'Cardiology', 'M'),
+('DO00000009', 'Martinez', 'Lucas', 'Jameson', 'Cardiology', 'M'),
 ('DO00000010', 'Herrera', 'Isabella Rose', 'Torres', 'Pulmonology', 'F');
 
 -- --------------------------------------------------------
