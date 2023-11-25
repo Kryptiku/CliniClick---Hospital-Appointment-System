@@ -6,7 +6,7 @@ import Staff_Login_BE as sbe
 
 os.system('cls')
 
-def staff_login():                                           # LOGIN WINDOW   
+def staff_login():                                                                                                                                   # LOGIN WINDOW   
     global staff, username_verify, password_verify, username_entry, password_entry, loginfail_label
     staff = tk.CTk()
     staff.title('CliniClick Staff Log-in')
@@ -39,21 +39,9 @@ def staff_login():                                           # LOGIN WINDOW
 
     staff.mainloop()
 
-def stlogin_verify():
-    sbe.stlogin_verify_test()
-    if sbe.results:
-        for i in sbe.results:
-            st_menu()
-            break
-    else:
-        stlogin_failed()
-        
 
-def stlogin_failed():
-    loginfail_label.configure(text='Invalid Credentials. Please try again.')
-    username_entry.delete(0, 'end'), password_entry.delete(0, 'end')
 
-def st_menu():                                          # MAIN MENU WINDOW
+def st_menu():                                                                                                                                    # MAIN MENU WINDOW
     staff.geometry('525x300')
     for child in staff.winfo_children():
         child.destroy()
@@ -65,7 +53,7 @@ def st_menu():                                          # MAIN MENU WINDOW
     welcome_label = tk.CTkLabel(staff, text="Welcome {} ".format(sbe.staff_lastname + ", " + sbe.staff_firstname + "!"), fg_color="green")
     mema_label = tk.CTkLabel(staff, text="")
     aptreq_btn = tk.CTkButton(staff, text='Appointment Requests', command=stappreq_main)
-    aptacpt_btn = tk.CTkButton(staff, text='Accepted Appointments', command = accepted_appointments)
+    aptacpt_btn = tk.CTkButton(staff, text='Accepted Appointments', command = staccepted_apts_main)
     logout_btn = tk.CTkButton(staff, text='Log-Out', bg_color='grey', width=8, height=1, command=logout)
     
 
@@ -75,7 +63,7 @@ def st_menu():                                          # MAIN MENU WINDOW
     aptacpt_btn.pack(pady=10)
     logout_btn.pack()
 
-def stappreq_main():                                    # APPOINTMENT REQUESTS WINDOW
+def stappreq_main():                                                                                                            # APPOINTMENT REQUESTS WINDOW
     for child in staff.winfo_children():
         child.destroy()
     
@@ -114,8 +102,9 @@ def stappreq_main():                                    # APPOINTMENT REQUESTS W
     accept_label = tk.CTkLabel(staff, text = 'Accept appointment: ')
     accept_label.pack(pady = 5)
     
-    sbe.dropdownobj()
-    options = tk.CTkComboBox(master = staff, values = sbe.ar_options, variable = "", command=changear_entries)
+    sbe.ardropdownobj()
+    global options
+    options = tk.CTkComboBox(staff, values = sbe.ar_options, variable = "", command=changear_entries)
     options.place(relx=0.5, rely=0.5, anchor = 'center')
     options.pack()
 
@@ -123,7 +112,7 @@ def stappreq_main():                                    # APPOINTMENT REQUESTS W
     choice_label = tk.CTkLabel(staff, text = "")
     choice_label.pack()
 
-    global time, date
+    global time, date, entry_time, entry_date
     time = tk.StringVar()
     label_time = tk.CTkLabel(staff, text='Time (HH:MM AM/PM): ')
     entry_time = tk.CTkEntry(staff, textvariable = time)
@@ -147,14 +136,15 @@ def stappreq_main():                                    # APPOINTMENT REQUESTS W
     back_btn = tk.CTkButton(staff, text='Back', bg_color='grey', width=8, height=1, command=st_menu)
     back_btn.pack(pady = 20)
 
-def accepted_appointments():                    # ACCEPTED APPOINTMENTS WINDOW
+def staccepted_apts_main():                                                                                                             # ACCEPTED APPOINTMENTS WINDOW
     for child in staff.winfo_children():
         child.destroy()
+
+    sbe.getacceptedapts()
     staff.title('Accepted Appointments')
     staff.geometry('920x650')
     mema_label = tk.CTkLabel(staff, text="")
     mema_label.pack()
-    sbe.getacceptedapts()
 
     global acctree
     tree_frame = tk.CTkFrame(staff)
@@ -184,7 +174,57 @@ def accepted_appointments():                    # ACCEPTED APPOINTMENTS WINDOW
     acceptedapt_current_treeview()
     acctree.pack(side = "left", fill="both", expand=True)
 
+    update_label = tk.CTkLabel(staff, text = 'Update or Delete appointment: ')
+    update_label.pack(pady = 5)
+
+    sbe.aadropdownobj()
+    global update_options
+    update_options = tk.CTkComboBox(staff, values = sbe.aa_options, variable = "", command=changeaa_entries)
+    update_options.place(relx=0.5, rely=0.5, anchor = 'center')
+    update_options.pack()
+
+    global updchoice_label, update_time, update_date, entry_time, entry_date
+    updchoice_label = tk.CTkLabel(staff, text = "")
+    updchoice_label.pack()
+
+    update_time = tk.StringVar()
+    label_time = tk.CTkLabel(staff, text='Time (HH:MM AM/PM): ')
+    entry_time = tk.CTkEntry(staff, textvariable = update_time)
+
+    update_date = tk.StringVar()
+    label_date = tk.CTkLabel(staff, text='Date (YYYY-MM-DD): ')
+    entry_date = tk.CTkEntry(staff, textvariable = update_date)
     
+    label_time.pack()
+    entry_time.pack()
+    label_date.pack()
+    entry_date.pack()
+
+    global updateapt_label
+    updateapt_label = tk.CTkLabel(staff, text = "")
+    updateapt_label.pack(pady = 10)
+
+    update_btn = tk.CTkButton(staff, text = 'Update Appointment', command = verify_update)
+    update_btn.pack(pady = 10)
+
+    delete_btn = tk.CTkButton(staff, text = "Delete Appointment", command = delete_appointment)
+    delete_btn.pack(pady = 5)
+
+    back_btn = tk.CTkButton(staff, text='Back', bg_color='grey', width=8, height=1, command=st_menu)
+    back_btn.pack(pady = 20)
+    
+def stlogin_verify():
+    sbe.stlogin_verify_test()
+    if sbe.results:
+        for i in sbe.results:
+            st_menu()
+            break
+    else:
+        stlogin_failed()
+
+def stlogin_failed():
+    loginfail_label.configure(text='Invalid Credentials. Please try again.')
+    username_entry.delete(0, 'end'), password_entry.delete(0, 'end')
 
 def logout():
     staff.destroy()
@@ -198,7 +238,7 @@ def changear_entries(choice):
     choice_label.configure(text = "Patient: " + sbe.ptntfn + " " + sbe.ptntln + "    ||    " + "Doctor: " + sbe.dctrfn + " " + sbe.dctrln)
     
 def verify_appointment():
-    sbe.acceptapt_validation(time.get(), date.get())
+    sbe.timeanddate_validation(time.get(), date.get())
     if sbe.error_time==True or sbe.error_date==True:
         declineappointment()
     else:
@@ -221,6 +261,10 @@ def acceptappointment():
     sbe.acceptappointment()
     aptaccepted_label.configure(text = "Appointment Accepted: " + show_acptdapt)
     aptreq_current_treeview()
+    sbe.ardropdownobj()
+    options.set('')
+    options.configure(values = sbe.ar_options, variable = "")
+    entry_time.delete(0, 'end'), entry_date.delete(0, 'end')
 
 def aptreq_current_treeview():
     sbe.getaptreq()
@@ -234,6 +278,51 @@ def acceptedapt_current_treeview():
     for row in sbe.acceptedapts:
         acctree.insert("", "end", values=row)
     
-    
+def changeaa_entries(aachoice):
+    global show_updtdapt
+    show_updtdapt = aachoice
+    sbe.aachoice = str(aachoice)
+    sbe.changeaa_entries()
+    updchoice_label.configure(text = "Patient: " + sbe.aaptntfn + " " + sbe.aaptntln + "    ||    " + "Doctor: " + sbe.aadctrfn + " " + sbe.aadctrln)
+
+def verify_update():
+    sbe.timeanddate_validation(update_time.get(), update_date.get())
+    if sbe.error_time==True or sbe.error_date==True:
+        declineupdate()
+    else:
+        update_appointment()
+
+def declineupdate():
+    global updfail
+    updfail = tk.CTkToplevel(staff)
+    updfail.attributes('-top', True)
+    updfail.title("Error!")
+    updfail.geometry('200x200')
+
+    fail_message = tk.CTkLabel(updfail, text = 'Failed to accept appointment. \nPlease check the inputted values', text_color = 'pink')
+    fail_message.pack(pady = 10)
+
+    okbtn = tk.CTkButton(updfail, text = 'Okay', command=updfail.destroy)
+    okbtn.pack()
+
+def update_appointment():
+    sbe.update_appointment()
+    updateapt_label.configure(text = "Appointment Updated: " + show_updtdapt)
+    acceptedapt_current_treeview()
+    sbe.aadropdownobj()
+    update_options.set('')
+    update_options.configure(values = sbe.aa_options, variable = "")
+    entry_time.delete(0, 'end'), entry_date.delete(0, 'end')
+
+def delete_appointment():
+    sbe.delete_appointment()
+    updateapt_label.configure(text = "Appointment Deleted: " + show_updtdapt)
+    acceptedapt_current_treeview()
+    sbe.aadropdownobj()
+    update_options.set('')
+    update_options.configure(values = sbe.aa_options, variable = "")
+    entry_time.delete(0, 'end'), entry_date.delete(0, 'end')
+
+
 # Initialize the login window
 staff_login()

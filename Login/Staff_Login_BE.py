@@ -31,7 +31,7 @@ def getaptreq():
     mycur.execute("SELECT a.apt_req_code, p.patient_lastname, p.patient_firstname, d.doctor_lastname, d.doctor_firstname FROM appointmentrequeststbl a INNER JOIN patienttbl p ON a.patient_code = p.patient_code INNER JOIN doctortbl d ON a.doctor_code = d.doctor_code")
     apt_req_data = mycur.fetchall()
 
-def dropdownobj():
+def ardropdownobj():
     global ar_options, ar_size
     mycur.execute("SELECT apt_req_code FROM appointmentrequeststbl ORDER BY apt_req_code ASC")
     ar_size = mycur.fetchall()
@@ -58,7 +58,7 @@ def changear_entries():
     else:
         ptntln, ptntfn, dctrln, dctrfn = "", "", "", ""
 
-def acceptapt_validation(time, date):
+def timeanddate_validation(time, date):
     global timeObject,formatted_time, new_time, dateObject, new_date, error_time, error_date
     error_time = False
     error_date = False
@@ -104,11 +104,44 @@ def acceptappointment():
     
     mycur.execute("DELETE FROM appointmentrequeststbl WHERE apt_req_code = " + "\'" + choice + "\'")
 
-    db.commit()
+    # db.commit()
 
 def getacceptedapts():
     global acceptedapts
     mycur.execute("SELECT a.apt_req_code, p.patient_lastname, p.patient_firstname, d.doctor_lastname, d.doctor_firstname, a.apt_date, a.apt_time FROM appointmentstbl a INNER JOIN patienttbl p ON a.patient_code = p.patient_code INNER JOIN doctortbl d ON a.doctor_code = d.doctor_code")
     acceptedapts = mycur.fetchall()
 
+def aadropdownobj():
+    global aa_options, aa_size
+    mycur.execute("SELECT apt_req_code FROM appointmentstbl ORDER BY apt_req_code ASC")
+    aa_size = mycur.fetchall()
+    aa_options = [row[0] for row in aa_size]
+
+def changeaa_entries():
+    global aachoice, aaptntln, aaptntfn, aadctrln, aadctrfn
+    query = (
+    "SELECT "
+    "p.patient_lastname, p.patient_firstname, "
+    "d.doctor_lastname, d.doctor_firstname "
+    "FROM appointmentstbl a "
+    "INNER JOIN patienttbl p ON a.patient_code = p.patient_code "
+    "INNER JOIN doctortbl d ON a.doctor_code = d.doctor_code "
+    f"WHERE apt_req_code = '{aachoice}'")
+
+    mycur.execute(query)    # Execute the query
+
+    goods = mycur.fetchall() # Fetch all rows from the result set
+
+    if goods:
+        aaptntln, aaptntfn, aadctrln, aadctrfn = goods[0]
+        aaptntln, aaptntfn, aadctrln, aadctrfn = str(aaptntln), str(aaptntfn), str(aadctrln), str(aadctrfn)
+    else:
+        aaptntln, aaptntfn, aadctrln, aadctrfn = "", "", "", ""
+
+def update_appointment():
+    mycur.execute("UPDATE appointmentstbl SET apt_date = " + "\'" + new_date + "\'" + ", apt_time = "  + "\'" + new_time + "\' WHERE apt_req_code = " + "\'" + aachoice + "\'")
     db.commit()
+
+def delete_appointment():
+    mycur.execute("DELETE FROM appointmentstbl WHERE apt_req_code = " + "\'" + aachoice + "\'")
+    
