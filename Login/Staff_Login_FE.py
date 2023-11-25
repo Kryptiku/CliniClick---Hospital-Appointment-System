@@ -6,7 +6,7 @@ import Staff_Login_BE as sbe
 
 os.system('cls')
 
-def staff_login():
+def staff_login():                                           # LOGIN WINDOW   
     global staff, username_verify, password_verify, username_entry, password_entry, loginfail_label
     staff = tk.CTk()
     staff.title('CliniClick Staff Log-in')
@@ -53,7 +53,7 @@ def stlogin_failed():
     loginfail_label.configure(text='Invalid Credentials. Please try again.')
     username_entry.delete(0, 'end'), password_entry.delete(0, 'end')
 
-def st_menu():
+def st_menu():                                          # MAIN MENU WINDOW
     staff.geometry('525x300')
     for child in staff.winfo_children():
         child.destroy()
@@ -65,7 +65,7 @@ def st_menu():
     welcome_label = tk.CTkLabel(staff, text="Welcome {} ".format(sbe.staff_lastname + ", " + sbe.staff_firstname + "!"), fg_color="green")
     mema_label = tk.CTkLabel(staff, text="")
     aptreq_btn = tk.CTkButton(staff, text='Appointment Requests', command=stappreq_main)
-    aptacpt_btn = tk.CTkButton(staff, text='Accepted Appointments')
+    aptacpt_btn = tk.CTkButton(staff, text='Accepted Appointments', command = accepted_appointments)
     logout_btn = tk.CTkButton(staff, text='Log-Out', bg_color='grey', width=8, height=1, command=logout)
     
 
@@ -75,17 +75,20 @@ def st_menu():
     aptacpt_btn.pack(pady=10)
     logout_btn.pack()
 
-def stappreq_main():
+def stappreq_main():                                    # APPOINTMENT REQUESTS WINDOW
     for child in staff.winfo_children():
         child.destroy()
     
     sbe.getaptreq()
     staff.title('Appointment Requests')
-    staff.geometry('700x500')
+    staff.geometry('700x650')
     mema_label = tk.CTkLabel(staff, text="")
     mema_label.pack()
 
-    tree = ttk.Treeview(staff, show="headings")
+    global tree
+    tree_frame = tk.CTkFrame(staff)
+    tree_frame.pack()
+    tree = ttk.Treeview(tree_frame, show="headings")
     tree["columns"] = ("req_id", "ptntln", "ptntfn", "dctrln", "dctrfn")
     
     bg_color = staff._apply_appearance_mode(tk.ThemeManager.theme["CTkFrame"]["fg_color"])
@@ -105,9 +108,8 @@ def stappreq_main():
     for column in tree["columns"]:
         tree.column(column, anchor="w", width=125)
     
-    for row in sbe.apt_req_data:
-        tree.insert("", "end", values=row)
-    tree.pack()
+    aptreq_current_treeview()
+    tree.pack(side = "left", fill="both", expand=True)
 
     accept_label = tk.CTkLabel(staff, text = 'Accept appointment: ')
     accept_label.pack(pady = 5)
@@ -142,11 +144,47 @@ def stappreq_main():
     acceptapt_btn = tk.CTkButton(staff, text = "Accept Appointment", command = verify_appointment)
     acceptapt_btn.pack(pady = 10)
 
-    # to do:
-    # copy the apt_req_code, patient_code, doctor_code, date, time, into appointmentstbl
-
     back_btn = tk.CTkButton(staff, text='Back', bg_color='grey', width=8, height=1, command=st_menu)
     back_btn.pack(pady = 20)
+
+def accepted_appointments():                    # ACCEPTED APPOINTMENTS WINDOW
+    for child in staff.winfo_children():
+        child.destroy()
+    staff.title('Accepted Appointments')
+    staff.geometry('920x650')
+    mema_label = tk.CTkLabel(staff, text="")
+    mema_label.pack()
+    sbe.getacceptedapts()
+
+    global acctree
+    tree_frame = tk.CTkFrame(staff)
+    tree_frame.pack()
+    acctree = ttk.Treeview(tree_frame, show="headings")
+    acctree["columns"] = ("req_id", "ptntln", "ptntfn", "dctrln", "dctrfn", "aptdate", "apttime")
+    
+    bg_color = staff._apply_appearance_mode(tk.ThemeManager.theme["CTkFrame"]["fg_color"])
+    text_color = staff._apply_appearance_mode(tk.ThemeManager.theme["CTkLabel"]["text_color"])
+
+    style = ttk.Style()
+    style.theme_use('default')
+    style.configure("Treeview", background=bg_color, foreground=text_color, fieldbackground=bg_color, borderwidth=0)
+
+    # Define column headings
+    acctree.heading("req_id", text="Request ID")
+    acctree.heading("ptntln", text="Patient Last Name")
+    acctree.heading("ptntfn", text="Patient First Name")
+    acctree.heading("dctrln", text="Doctor Last Name")
+    acctree.heading("dctrfn", text="Doctor First Name")
+    acctree.heading("aptdate", text="Date")
+    acctree.heading("apttime", text="Time")
+
+    for column in acctree["columns"]:
+        acctree.column(column, anchor="w", width=125)
+    
+    acceptedapt_current_treeview()
+    acctree.pack(side = "left", fill="both", expand=True)
+
+    
 
 def logout():
     staff.destroy()
@@ -182,6 +220,20 @@ def declineappointment():
 def acceptappointment():
     sbe.acceptappointment()
     aptaccepted_label.configure(text = "Appointment Accepted: " + show_acptdapt)
+    aptreq_current_treeview()
+
+def aptreq_current_treeview():
+    sbe.getaptreq()
+    tree.delete(*tree.get_children())
+    for row in sbe.apt_req_data:
+        tree.insert("", "end", values=row)
+
+def acceptedapt_current_treeview():
+    sbe.getacceptedapts()
+    acctree.delete(*acctree.get_children())
+    for row in sbe.acceptedapts:
+        acctree.insert("", "end", values=row)
+    
     
 # Initialize the login window
 staff_login()

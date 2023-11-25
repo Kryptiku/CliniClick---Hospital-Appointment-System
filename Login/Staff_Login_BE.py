@@ -95,21 +95,20 @@ def acceptappointment():
     result1 = mycur.fetchall()
     for row  in result1 :
         ptntcode = ''.join(row)
-    print(ptntcode)
-
     mycur.execute("SELECT doctor_code FROM appointmentrequeststbl WHERE apt_req_code = " + "\'" + choice + "\'")
     result2 = mycur.fetchall()
     for row  in result2 :
         dctrcode = ''.join(row)
-    print(dctrcode)
-    print(choice)
-    date = str(new_date)
-    # val = (choice, ptntcode, dctrcode, new_date, new_time)
     sql = "INSERT INTO appointmentstbl VALUES ("  + "\'" + choice + "\', " + "\'" + ptntcode + "\', " + "\'" + dctrcode + "\', " + "\'" + new_date + "\', " + "\'" + new_time + "\')"
     mycur.execute(sql)
     
-    mycur.execute("SELECT * FROM appointmentstbl")
-    success = mycur.fetchall()
-    print(success)
+    mycur.execute("DELETE FROM appointmentrequeststbl WHERE apt_req_code = " + "\'" + choice + "\'")
+
+    db.commit()
+
+def getacceptedapts():
+    global acceptedapts
+    mycur.execute("SELECT a.apt_req_code, p.patient_lastname, p.patient_firstname, d.doctor_lastname, d.doctor_firstname, a.apt_date, a.apt_time FROM appointmentstbl a INNER JOIN patienttbl p ON a.patient_code = p.patient_code INNER JOIN doctortbl d ON a.doctor_code = d.doctor_code")
+    acceptedapts = mycur.fetchall()
 
     db.commit()
