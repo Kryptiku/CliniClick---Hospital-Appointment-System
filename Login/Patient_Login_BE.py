@@ -37,6 +37,7 @@ def fail_destroy():
     
 def register_user(lastname, firstname, middlename, birthdate, sex, contact, address, username, password):
     global lastname_info, firstname_info, middlename_info, birthdate_info, sex_info, contact_info, address_info, username_info, password_info, dateObject, new_date
+    
     lastname_info = lastname
     firstname_info = firstname
     middlename_info = middlename
@@ -52,15 +53,16 @@ def register_user(lastname, firstname, middlename, birthdate, sex, contact, addr
        
     try:
         dateObject = datetime.datetime.strptime(new_date, date_format)
-        print(new_date)
         registration_validation()
         
-    except ValueError:
-        print('Error')   
+    except ValueError:  
         login_failed()
     
 def registration_validation():
     if lastname_info == '' or firstname_info == '' or middlename_info == '' or birthdate_info == '' or sex_info == '' or contact_info == '' or username_info == '' or password_info == '':
+        login_failed()
+        
+    elif len(lastname_info) > 20 or len(firstname_info) > 20 or len(middlename_info) > 20 or len(address_info) > 50 or len(username_info) > 15 or len(password_info) > 15:
         login_failed()
 
     else:
@@ -77,7 +79,8 @@ def registration_validation():
         t = ('PA' + modified_value + conv_rowcount, lastname_info, firstname_info, middlename_info, birthdate_info, sex_info, contact_info, address_info, username_info, password_info)
         mycur.execute(sql, t)
         db.commit()
-        print("Register Success")   
+        print("Register Success")  
+        registration_success()
     
 def dropdownobj():
     global specialist_options, specialist_size, doctor_options, doctor_size, choice
@@ -164,3 +167,21 @@ def patient_history():
     
     mycur.execute('select d.doctor_lastname, d.doctor_firstname, h.diagnosis, h.diagnosis_date, m.meds_name, p.dosage, p.frequency from patienthistorytbl h inner join doctortbl d on h.doctor_code = d.doctor_code inner join medstbl m on h.meds_code = m.meds_code inner join prescriptiontbl p on h.meds_code = p.meds_code where h.patient_code = ' + '\'' + new_patient_code + '\'')        
     pa_his_data = mycur.fetchall()
+    
+def registration_success():
+    global success_main
+    success_main = tk.CTkToplevel()
+    success_main.attributes('-topmost', True)
+    success_main.title('Invalid')
+    success_main.geometry('200x100')
+    
+    error_label = tk.CTkLabel(success_main, text = 'Registration Success')
+    ok_button = tk.CTkButton(success_main, text = 'Ok', command = success_destroy)
+    
+    error_label.pack()
+    ok_button.pack()
+    
+def success_destroy():
+    global register_main
+    success_main.destroy()
+    register_main.destroy()
