@@ -1,6 +1,5 @@
 import customtkinter as tk
 from tkinter import ttk
-import tkinter
 import os
 import Staff_Login_BE as sbe
 
@@ -159,7 +158,6 @@ def staccepted_apts_main():                                                     
     style.theme_use('default')
     style.configure("Treeview", background=bg_color, foreground=text_color, fieldbackground=bg_color, borderwidth=0)
 
-    # Define column headings
     acctree.heading("req_id", text="Request ID")
     acctree.heading("ptntln", text="Patient Last Name")
     acctree.heading("ptntfn", text="Patient First Name")
@@ -202,14 +200,15 @@ def staccepted_apts_main():                                                     
 
     global updateapt_label
     updateapt_label = tk.CTkLabel(staff, text = "")
-    updateapt_label.pack(pady = 10)
+    updateapt_label.pack(pady = 5)
 
     update_btn = tk.CTkButton(staff, text = 'Update Appointment', command = verify_update)
-    update_btn.pack(pady = 10)
-
+    done_btn = tk.CTkButton(staff, text = 'Appointment Done', command = appointment_done)
     delete_btn = tk.CTkButton(staff, text = "Delete Appointment", command = delete_appointment)
+    update_btn.pack(padx = 5, pady = 5)
+    done_btn.pack(padx = 5, pady = 5)
     delete_btn.pack(pady = 5)
-
+    
     back_btn = tk.CTkButton(staff, text='Back', bg_color='grey', width=8, height=1, command=st_menu)
     back_btn.pack(pady = 20)
     
@@ -245,7 +244,6 @@ def verify_appointment():
         acceptappointment()
 
 def declineappointment():
-    global aptfail
     aptfail = tk.CTkToplevel(staff)
     aptfail.attributes('-top', True)
     aptfail.title("Error!")
@@ -293,7 +291,6 @@ def verify_update():
         update_appointment()
 
 def declineupdate():
-    global updfail
     updfail = tk.CTkToplevel(staff)
     updfail.attributes('-top', True)
     updfail.title("Error!")
@@ -323,6 +320,48 @@ def delete_appointment():
     update_options.configure(values = sbe.aa_options, variable = "")
     entry_time.delete(0, 'end'), entry_date.delete(0, 'end')
 
+def appointment_done():
+    global diagnosis, meds_cb, dosage, frequency
+    aptdone = tk.CTkToplevel(staff)
+    aptdone.attributes('-top', True)
+    aptdone.title("Appointment Done")
+    aptdone.geometry("400x300")
+
+    sbe.medsdropdownobj()
+    diagnosis = tk.StringVar()
+    dosage = tk.StringVar()
+    frequency = tk.StringVar()
+
+    diagnosis_label = tk.CTkLabel(aptdone, text = "Diagnosis:")
+    diagnosis_entry = tk.CTkEntry(aptdone, textvariable = diagnosis)
+    meds_label = tk.CTkLabel(aptdone, text = "Medicine:")
+    meds_cb = tk.CTkComboBox(aptdone, values = sbe.meds_options, variable = "")
+    dosage_label = tk.CTkLabel(aptdone, text = "Dosage:")
+    dosage_entry = tk.CTkEntry(aptdone, textvariable = dosage)
+    frequency_label = tk.CTkLabel(aptdone, text = "Frequency:")
+    frequency_entry = tk.CTkEntry(aptdone, textvariable = frequency)
+
+    diagnosis_label.pack(pady=2)
+    diagnosis_entry.pack(pady=2)
+    meds_label.pack(pady=2)
+    meds_cb.pack(pady=2)
+    dosage_label.pack(pady=2)
+    dosage_entry.pack(pady=2)
+    frequency_label.pack(pady=2)
+    frequency_entry.pack(pady=2)
+
+    enter_btn = tk.CTkButton(aptdone, text = "Enter", command = enter_done)
+    enter_btn.pack()
+
+    back_btn = tk.CTkButton(aptdone, text = "Back", command = aptdone.destroy)
+    back_btn.pack()
+    
+def enter_done():
+    sbe.enter_done(diagnosis.get(), meds_cb.get(), dosage.get(), frequency.get())
+    
+
+
+    
 
 # Initialize the login window
 staff_login()

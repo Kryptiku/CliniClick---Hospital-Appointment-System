@@ -128,9 +128,9 @@ def changeaa_entries():
     "INNER JOIN doctortbl d ON a.doctor_code = d.doctor_code "
     f"WHERE apt_req_code = '{aachoice}'")
 
-    mycur.execute(query)    # Execute the query
+    mycur.execute(query)
 
-    goods = mycur.fetchall() # Fetch all rows from the result set
+    goods = mycur.fetchall()
 
     if goods:
         aaptntln, aaptntfn, aadctrln, aadctrfn = goods[0]
@@ -144,4 +144,31 @@ def update_appointment():
 
 def delete_appointment():
     mycur.execute("DELETE FROM appointmentstbl WHERE apt_req_code = " + "\'" + aachoice + "\'")
+    # db.commit()
+
+def medsdropdownobj():
+    global meds_options, meds_size
+    mycur.execute("SELECT meds_name FROM medstbl ORDER BY meds_code ASC")
+    meds_size = mycur.fetchall()
+    meds_options = [row[0] for row in meds_size]
+
+def enter_done(diagnosis, meds, dosage, frequency):
+    mycur.execute("SELECT patient_code FROM appointmentstbl WHERE apt_req_code = " + "\'" + aachoice + "\'")
+    result1 = mycur.fetchall()
+    for row  in result1 :
+        dptntcode = ''.join(row)
+    mycur.execute("SELECT doctor_code FROM appointmentstbl WHERE apt_req_code = " + "\'" + aachoice + "\'")
+    result2 = mycur.fetchall()
+    for row  in result2 :
+        ddctrcode = ''.join(row)
+    
+    mycur.execute("Select meds_code FROM medstbl WHERE meds_name = " + "\'" + meds + "\'")
+    result3 = mycur.fetchall()
+    for row  in result3 :
+        meds_code = ''.join(row)
+
+    mycur.execute("INSERT INTO prescriptiontbl VALUES (" + "\'" + meds_code + "\', " + "\'" + dptntcode + "\', " + "\'" + dosage + "\', " + "\'" + frequency + "\')")
+    
+    mycur.execute("INSERT INTO 
+    
     
