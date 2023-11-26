@@ -155,20 +155,40 @@ def medsdropdownobj():
 def enter_done(diagnosis, meds, dosage, frequency):
     mycur.execute("SELECT patient_code FROM appointmentstbl WHERE apt_req_code = " + "\'" + aachoice + "\'")
     result1 = mycur.fetchall()
-    for row  in result1 :
+    for row in result1 :
         dptntcode = ''.join(row)
     mycur.execute("SELECT doctor_code FROM appointmentstbl WHERE apt_req_code = " + "\'" + aachoice + "\'")
     result2 = mycur.fetchall()
-    for row  in result2 :
+    for row in result2 :
         ddctrcode = ''.join(row)
     
     mycur.execute("Select meds_code FROM medstbl WHERE meds_name = " + "\'" + meds + "\'")
     result3 = mycur.fetchall()
-    for row  in result3 :
+    for row in result3 :
         meds_code = ''.join(row)
+
+    mycur.execute("SELECT apt_date FROM appointmentstbl WHERE apt_req_code = " + "\'" + aachoice + "\'")
+    result4 = mycur.fetchall()
+    for row in result4:
+        aptdate = row[0].strftime("%Y-%m-%d")
 
     mycur.execute("INSERT INTO prescriptiontbl VALUES (" + "\'" + meds_code + "\', " + "\'" + dptntcode + "\', " + "\'" + dosage + "\', " + "\'" + frequency + "\')")
     
-    mycur.execute("INSERT INTO 
+    # create new patient history code
+    mycur.execute("SELECT patient_history_code FROM patienthistorytbl")
+    mycur.fetchall()
+    conv_rowcount = str(mycur.rowcount + 1)
+    value = '00000000' 
+    conv_rowcount = str(conv_rowcount)
+    temp = len(conv_rowcount)
+    modified_value = value[:-temp]
+
+    sql = "INSERT INTO patienthistorytbl VALUES (%s, %s, %s, %s, %s, %s)"
+    t = ('PH' + modified_value + conv_rowcount, dptntcode, ddctrcode, diagnosis, meds_code, aptdate)
+    mycur.execute(sql, t)
+    mycur.execute("SELECT * FROM patienthistorytbl")
+    wow = mycur.fetchall()
+    print(wow)
+
     
     
