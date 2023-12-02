@@ -208,19 +208,20 @@ def drop_down_config(choice):
 def appointment_registration():
     pbe.appointment_registration(doctors_dropdown.get())
     
+    
 def patient_history():
     for child in main_screen.winfo_children():
         child.destroy()
     
     pbe.patient_history()
     
-    main_screen.title('Appointment Requests')
-    main_screen.geometry('750x500')
+    main_screen.title('Patient History')
+    main_screen.geometry('900x300')
     mema_label = tk.CTkLabel(main_screen, text='')
     mema_label.pack()
 
     tree = ttk.Treeview(main_screen, show='headings')
-    tree['columns'] = ('dctrln', 'dctrfn', 'diag', 'med', 'dsg', 'freq')
+    tree['columns'] = ('dctrln', 'dctrfn', 'diag', 'date', 'med', 'dsg', 'freq')
     
     bg_color = main_screen._apply_appearance_mode(tk.ThemeManager.theme['CTkFrame']['fg_color'])
     text_color = main_screen._apply_appearance_mode(tk.ThemeManager.theme['CTkLabel']['text_color'])
@@ -232,9 +233,10 @@ def patient_history():
     tree.heading('dctrln', text='Doctor Last Name')
     tree.heading('dctrfn', text='Doctor First Name')
     tree.heading('diag', text='Diagnosis')
+    tree.heading('date', text = 'Date')
     tree.heading('med', text='Medication')
     tree.heading('dsg', text='Dosage')
-    tree.heading('freq', text='Frenquency')
+    tree.heading('freq', text='Frequency')
     
     for column in tree['columns']:
         tree.column(column, anchor='s', width=125)
