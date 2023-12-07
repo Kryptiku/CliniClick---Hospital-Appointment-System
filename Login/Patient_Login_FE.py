@@ -283,6 +283,7 @@ def alt_main():
     
     welcome_label = tk.CTkLabel(frame, text = 'Welcome {} '.format(pbe.patient_lastname + '!'))
     appointment_button = tk.CTkButton(frame, text = 'Register Appointment', command = register_appointment)
+    pending_button = tk.CTkBUtton(frame, text = "Pending Appointments", command = pending_appointments)
     history_button = tk.CTkButton(frame, text = 'View History and Prescriptions', command = alt_main)
     log_out_button = tk.CTkButton(frame, text = 'Log-Out', command = patient_main_screen)
     
@@ -332,5 +333,49 @@ def alt_main():
     back_button.pack(pady = 10)
     
     main_screen.mainloop()
-            
+
+def pending_appointments():
+    for child in main_screen.winfo_children():
+        child.destroy()
+
+    pbe.getacceptedapts()
+    main_screen.title('Accepted Appointments')
+    main_screen.geometry('920x700')
+    mema_label = tk.CTkLabel(main_screen, text="")
+    mema_label.pack()
+
+    global acctree
+    tree_frame = tk.CTkFrame(main_screen)
+    tree_frame.pack()
+    acctree = ttk.Treeview(tree_frame, show="headings")
+    acctree["columns"] = ("req_id", "ptntln", "ptntfn", "dctrln", "dctrfn", "aptdate", "apttime")
+    
+    bg_color = main_screen._apply_appearance_mode(tk.ThemeManager.theme["CTkFrame"]["fg_color"])
+    text_color = main_screen._apply_appearance_mode(tk.ThemeManager.theme["CTkLabel"]["text_color"])
+
+    style = ttk.Style()
+    style.theme_use('default')
+    style.configure("Treeview", background=bg_color, foreground=text_color, fieldbackground=bg_color, borderwidth=0)
+
+    acctree.heading("req_id", text="Request ID")
+    acctree.heading("ptntln", text="Patient Last Name")
+    acctree.heading("ptntfn", text="Patient First Name")
+    acctree.heading("dctrln", text="Doctor Last Name")
+    acctree.heading("dctrfn", text="Doctor First Name")
+    acctree.heading("aptdate", text="Date")
+    acctree.heading("apttime", text="Time")
+
+    for column in acctree["columns"]:
+        acctree.column(column, anchor="w", width=125)
+    
+    acceptedapt_current_treeview()
+    acctree.pack(side = "left", fill="both", expand=True)
+
+def acceptedapt_current_treeview():
+    pbe.pending_appointments()
+    acctree.delete(*acctree.get_children())
+    for row in pbe.pending_appointments:
+        acctree.insert("", "end", values=row)
+
+
 base_screen()

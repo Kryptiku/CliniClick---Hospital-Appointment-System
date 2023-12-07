@@ -202,3 +202,8 @@ def appointment_registration_success():
         
 def registration_success_destroy():
     success_main.destroy()
+
+def pending_appointments():
+    global acceptedapts
+    mycur.execute('SELECT a.apt_req_code, p.patient_lastname, p.patient_firstname, d.doctor_lastname, d.doctor_firstname, a.apt_date, a.apt_time FROM appointmentstbl a INNER JOIN patienttbl p ON a.patient_code = p.patient_code INNER JOIN doctortbl d ON a.doctor_code = d.doctor_code where patient_username = ' + '\'' + paun_verify + '\'')
+    acceptedapts = mycur.fetchall()
