@@ -373,11 +373,14 @@ def pending_appointments():
     
     acceptedapt_current_treeview()
     acctree.pack(side = "left", fill="both", expand=True)
+    
+    back_button = tk.CTkButton(main_screen, text = 'Back', command = login_main)
+    back_button.pack()
 
 def acceptedapt_current_treeview():
     pbe.pending_appointments()
     acctree.delete(*acctree.get_children())
-    for row in pbe.pending_appointments:
+    for row in pbe.acceptedapts:
         acctree.insert("", "end", values=row)
 
 
