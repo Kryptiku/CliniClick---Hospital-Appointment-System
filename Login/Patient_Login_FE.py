@@ -1,5 +1,5 @@
 import customtkinter as tk
-from tkinter import *
+from tkinter import ttk
 import Patient_Login_BE as pbe
 from PIL import ImageTk,Image
 
@@ -225,7 +225,7 @@ def login_main():
     main_screen.geometry('525x300')
     welcome_label = tk.CTkLabel(main_screen, text = 'Welcome {} '.format(pbe.patient_lastname + '!'))
     appointment_button = tk.CTkButton(main_screen, text = 'Register Appointment', command = register_appointment)
-    history_button = tk.CTkButton(main_screen, text = 'View History and Prescriptions', command = patient_history)
+    history_button = tk.CTkButton(main_screen, text = 'View History and Prescriptions', command = alt_main)
     log_out_button = tk.CTkButton(main_screen, text = 'Log-Out', command = patient_main_screen)
     
     welcome_label.pack(pady = 10)
@@ -268,20 +268,41 @@ def drop_down_config(choice):
     
 def appointment_registration():
     pbe.appointment_registration(doctors_dropdown.get())
-    
-    
-def patient_history():
+
+def register_destroy():
+    registration_main.destroy()\
+        
+def alt_main():
     for child in main_screen.winfo_children():
         child.destroy()
+        
+    main_screen.title('Welcome')
+    main_screen.geometry('525x300')
+    frame = tk.CTkFrame(main_screen)
+    frame.pack(side = 'left')
+    
+    welcome_label = tk.CTkLabel(frame, text = 'Welcome {} '.format(pbe.patient_lastname + '!'))
+    appointment_button = tk.CTkButton(frame, text = 'Register Appointment', command = register_appointment)
+    history_button = tk.CTkButton(frame, text = 'View History and Prescriptions', command = alt_main)
+    log_out_button = tk.CTkButton(frame, text = 'Log-Out', command = patient_main_screen)
+    
+    welcome_label.pack(pady = 10)
+    appointment_button.pack(pady = 10)
+    history_button.pack(pady = 10)
+    log_out_button.pack(pady = 10)
     
     pbe.patient_history()
     
     main_screen.title('Patient History')
     main_screen.geometry('900x300')
-    mema_label = tk.CTkLabel(main_screen, text='')
-    mema_label.pack()
+    
+    frame2 = tk.CTkFrame(main_screen)
+    frame2.pack()
+    
+    placeholder_label = tk.CTkLabel(frame2, text='')
+    placeholder_label.pack()
 
-    tree = ttk.Treeview(main_screen, show='headings')
+    tree = ttk.Treeview(frame2, show='headings')
     tree['columns'] = ('dctrln', 'dctrfn', 'diag', 'date', 'med', 'dsg', 'freq')
     
     bg_color = main_screen._apply_appearance_mode(tk.ThemeManager.theme['CTkFrame']['fg_color'])
@@ -305,12 +326,11 @@ def patient_history():
     for row in pbe.pa_his_data:
         tree.insert('', 'end', values=row)
         
-    back_button = tk.CTkButton(main_screen, text = 'Back', command = login_main)
+    back_button = tk.CTkButton(frame2, text = 'Back', command = login_main)
         
     tree.pack()
     back_button.pack(pady = 10)
-
-def register_destroy():
-    registration_main.destroy()
+    
+    main_screen.mainloop()
             
 base_screen()
