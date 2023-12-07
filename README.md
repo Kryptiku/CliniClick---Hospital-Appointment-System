@@ -10,23 +10,13 @@ Efficiently manage patient information, including medical history, and treatment
 ### Appointment Scheduling
 Book appointments with ease for both patients and healthcare professionals. Cliniclick offers a user-friendly interface for scheduling, modifying, and canceling appointments, reducing wait times and improving overall patient experience.
  
-## User Authentication
-Each user must have unique username and password.
-
-## System Requirements
-
-### Required: 
-  Os: Windows Xp, 7, 10
-  Processor: 2.0Ghz
-  Memory: 2GB
-  Hard Disk Space: 100MB
-
-### Recommended: 
-  Os: Windows Xp, 7, 10
-  Processor: 3.0Ghz
-  Memory: 4GB
-  Hard Disk Space: 200MB
-
+## Dependencies
+- `pip install tkinter`
+- `pip install customtkinter`
+- `pip install datetime`
+- `pip install mysql-connector`
+- `pip install mysql-connector-python`
+- `pip install pillow`
 
 ## Support and Feedback
 For any issues or feedback, please contact our support team at blankblankblank. We appreciate your input as we strive to improve Cliniclick and provide a seamless hospital management experience.
