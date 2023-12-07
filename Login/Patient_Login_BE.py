@@ -156,6 +156,7 @@ def appointment_registration(doctor_name):
         mycur.execute(sql, t)
         db.commit()
         print("Register Success")
+        appointment_registration_success()
         
 def patient_history():
     global pa_his_data
@@ -172,7 +173,7 @@ def registration_success():
     global success_main
     success_main = tk.CTkToplevel()
     success_main.attributes('-topmost', True)
-    success_main.title('Invalid')
+    success_main.title('Success')
     success_main.geometry('200x100')
     
     error_label = tk.CTkLabel(success_main, text = 'Registration Success')
@@ -185,3 +186,19 @@ def success_destroy():
     global register_main
     success_main.destroy()
     register_main.destroy()
+    
+def appointment_registration_success():
+    global success_main
+    success_main = tk.CTkToplevel()
+    success_main.attributes('-topmost', True)
+    success_main.title('Success')
+    success_main.geometry('200x100')
+    
+    error_label = tk.CTkLabel(success_main, text = 'Registration Success')
+    ok_button = tk.CTkButton(success_main, text = 'Ok', command = registration_success_destroy)
+    
+    error_label.pack()
+    ok_button.pack()\
+        
+def registration_success_destroy():
+    success_main.destroy()
