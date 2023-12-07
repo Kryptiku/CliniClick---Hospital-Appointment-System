@@ -225,11 +225,13 @@ def login_main():
     main_screen.geometry('525x300')
     welcome_label = tk.CTkLabel(main_screen, text = 'Welcome {} '.format(pbe.patient_lastname + '!'))
     appointment_button = tk.CTkButton(main_screen, text = 'Register Appointment', command = register_appointment)
+    pending_button = tk.CTkButton(main_screen, text = "Pending Appointments", command = pending_appointments)
     history_button = tk.CTkButton(main_screen, text = 'View History and Prescriptions', command = alt_main)
     log_out_button = tk.CTkButton(main_screen, text = 'Log-Out', command = patient_main_screen)
     
     welcome_label.pack(pady = 10)
     appointment_button.pack(pady = 10)
+    pending_button.pack(pady = 10)
     history_button.pack(pady = 10)
     log_out_button.pack(pady = 10)
     
@@ -283,12 +285,13 @@ def alt_main():
     
     welcome_label = tk.CTkLabel(frame, text = 'Welcome {} '.format(pbe.patient_lastname + '!'))
     appointment_button = tk.CTkButton(frame, text = 'Register Appointment', command = register_appointment)
-    pending_button = tk.CTkBUtton(frame, text = "Pending Appointments", command = pending_appointments)
+    pending_button = tk.CTkButton(frame, text = "Pending Appointments", command = pending_appointments)
     history_button = tk.CTkButton(frame, text = 'View History and Prescriptions', command = alt_main)
     log_out_button = tk.CTkButton(frame, text = 'Log-Out', command = patient_main_screen)
     
     welcome_label.pack(pady = 10)
     appointment_button.pack(pady = 10)
+    pending_button.pack(pady = 10)
     history_button.pack(pady = 10)
     log_out_button.pack(pady = 10)
     
@@ -338,7 +341,7 @@ def pending_appointments():
     for child in main_screen.winfo_children():
         child.destroy()
 
-    pbe.getacceptedapts()
+    pbe.pending_appointments()
     main_screen.title('Accepted Appointments')
     main_screen.geometry('920x700')
     mema_label = tk.CTkLabel(main_screen, text="")
