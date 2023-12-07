@@ -9,9 +9,6 @@ Efficiently manage patient information, including medical history, and treatment
 
 ### Appointment Scheduling
 Book appointments with ease for both patients and healthcare professionals. Cliniclick offers a user-friendly interface for scheduling, modifying, and canceling appointments, reducing wait times and improving overall patient experience.
-
-## Installation
- To install CliniClick, follow these steps:
  
 ## User Authentication
 Each user must have unique username and password.
