@@ -18,11 +18,6 @@ Book appointments with ease for both patients and healthcare professionals. Clin
 - `pip install mysql-connector-python`
 - `pip install pillow`
 
-## Support and Feedback
-For any issues or feedback, please contact our support team at blankblankblank. We appreciate your input as we strive to improve Cliniclick and provide a seamless hospital management experience.
-
-Thank you for choosing Cliniclick!
-
 <div align="center">
   <div style="display: flex;">
     <img src="https://globalgoalscms.co.uk/wp-content/uploads/2021/09/3.png" alt="sdG3" width="200"/>
