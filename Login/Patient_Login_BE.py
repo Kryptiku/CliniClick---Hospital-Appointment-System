@@ -1,6 +1,7 @@
 import customtkinter as tk
 import datetime
 import mysql.connector
+from abc import ABC, abstractmethod
 
 db = mysql.connector.connect(host = 'localhost', user = 'root', password = '', database = 'cliniclick_db')
 mycur = db.cursor()
@@ -115,91 +116,121 @@ def drop_down_update(choice):
         full_name = last_name + ', ' + first_name
         
         config_doctor_options.append(full_name)
+
+class AppointmentRequest(ABC):
+    @abstractmethod
+    def register(self):
+        pass
+
+class DoctorAppointmentRequest(AppointmentRequest):
+    def __init__(self, doctor_name, paun_verify, mycur, db):
+        self.doctor_name = doctor_name
+        self.paun_verify = paun_verify
+        self.mycur = mycur
+        self.db = db
+
+    def register(self):
+        global fromatted_doctor_name
+        delimiter = ','
+        fromatted_doctor_name = doctor_name.split(delimiter)[0]
         
-def appointment_registration(doctor_name):
-    global fromatted_doctor_name
-    delimiter = ','
-    fromatted_doctor_name = doctor_name.split(delimiter)[0]
-    
-    if fromatted_doctor_name == '':
-        login_failed()
-    
-    else:
-        mycur.execute('select apt_req_code from appointmentrequeststbl')
-        mycur.fetchall()
+        if fromatted_doctor_name == '':
+            login_failed()
         
-        conv_rowcount = str(mycur.rowcount + 1)
-        value = '00000000' 
-        conv_rowcount = str(conv_rowcount)
-        temp = len(conv_rowcount)
-        modified_value = value[:-temp]
-        db.commit()
+        else:
+            mycur.execute('select apt_req_code from appointmentrequeststbl')
+            mycur.fetchall()
+            
+            conv_rowcount = str(mycur.rowcount + 1)
+            value = '00000000' 
+            conv_rowcount = str(conv_rowcount)
+            temp = len(conv_rowcount)
+            modified_value = value[:-temp]
+            db.commit()
+            
+            mycur.execute('select patient_code from patienttbl where patient_username = ' + '\'' + paun_verify + '\'')
+            patient_code = mycur.fetchall()
+            
+            for row  in patient_code:
+                new_patient_code = ''.join(row)
+                
+            db.commit()
+            
+            mycur.execute('select doctor_code from doctortbl where doctor_lastname = ' + '\'' + fromatted_doctor_name + '\'')
+            doctor_code = mycur.fetchall()
+            
+            for row  in doctor_code:
+                new_doctor_code = ''.join(row)
+            
+            db.commit()
+            
+            sql = 'insert into appointmentrequeststbl values (%s, %s, %s)'
+            t = ('AR' + modified_value + conv_rowcount, new_patient_code, new_doctor_code)
+            mycur.execute(sql, t)
+            db.commit()
+            print("Register Success")
+            appointment_registration_success()
         
+class PatientHistoryRequest(AppointmentRequest):
+    def __init__(self, paun_verify, mycur):
+        self.paun_verify = paun_verify
+        self.mycur = mycur
+
+    def get_patient_history(self):   
+        global pa_his_data
         mycur.execute('select patient_code from patienttbl where patient_username = ' + '\'' + paun_verify + '\'')
         patient_code = mycur.fetchall()
         
         for row  in patient_code:
-            new_patient_code = ''.join(row)
-            
-        db.commit()
+                new_patient_code = ''.join(row)
         
-        mycur.execute('select doctor_code from doctortbl where doctor_lastname = ' + '\'' + fromatted_doctor_name + '\'')
-        doctor_code = mycur.fetchall()
+        mycur.execute('select d.doctor_lastname, d.doctor_firstname, h.diagnosis, h.diagnosis_date, m.meds_name, p.dosage, p.frequency from patienthistorytbl h inner join doctortbl d on h.doctor_code = d.doctor_code inner join medstbl m on h.meds_code = m.meds_code inner join prescriptiontbl p on h.meds_code = p.meds_code where h.patient_code = ' + '\'' + new_patient_code + '\'')        
+        pa_his_data = mycur.fetchall()
+
+class RegistrationSuccess(ABC):
+    @abstractmethod
+    def display_success(self):
+        pass
+
+class RegistrationSuccessWindow(RegistrationSuccess):
+    def __init__(self, success_message):
+        self.success_message = success_message
+
+    def display_success(self):
+        global success_main
+        success_main = tk.CTkToplevel()
+        success_main.attributes('-topmost', True)
+        success_main.title('Success')
+        success_main.geometry('200x100')
         
-        for row  in doctor_code:
-            new_doctor_code = ''.join(row)
+        error_label = tk.CTkLabel(success_main, text = 'Registration Success')
+        ok_button = tk.CTkButton(success_main, text = 'Ok', command = success_destroy)
         
-        db.commit()
-        
-        sql = 'insert into appointmentrequeststbl values (%s, %s, %s)'
-        t = ('AR' + modified_value + conv_rowcount, new_patient_code, new_doctor_code)
-        mycur.execute(sql, t)
-        db.commit()
-        print("Register Success")
-        appointment_registration_success()
-        
-def patient_history():
-    global pa_his_data
-    mycur.execute('select patient_code from patienttbl where patient_username = ' + '\'' + paun_verify + '\'')
-    patient_code = mycur.fetchall()
-    
-    for row  in patient_code:
-            new_patient_code = ''.join(row)
-    
-    mycur.execute('select d.doctor_lastname, d.doctor_firstname, h.diagnosis, h.diagnosis_date, m.meds_name, p.dosage, p.frequency from patienthistorytbl h inner join doctortbl d on h.doctor_code = d.doctor_code inner join medstbl m on h.meds_code = m.meds_code inner join prescriptiontbl p on h.meds_code = p.meds_code where h.patient_code = ' + '\'' + new_patient_code + '\'')        
-    pa_his_data = mycur.fetchall()
-    
-def registration_success():
-    global success_main
-    success_main = tk.CTkToplevel()
-    success_main.attributes('-topmost', True)
-    success_main.title('Success')
-    success_main.geometry('200x100')
-    
-    error_label = tk.CTkLabel(success_main, text = 'Registration Success')
-    ok_button = tk.CTkButton(success_main, text = 'Ok', command = success_destroy)
-    
-    error_label.pack()
-    ok_button.pack()
+        error_label.pack()
+        ok_button.pack()
     
 def success_destroy():
     global register_main
     success_main.destroy()
     register_main.destroy()
     
-def appointment_registration_success():
-    global success_main
-    success_main = tk.CTkToplevel()
-    success_main.attributes('-topmost', True)
-    success_main.title('Success')
-    success_main.geometry('200x100')
-    
-    error_label = tk.CTkLabel(success_main, text = 'Registration Success')
-    ok_button = tk.CTkButton(success_main, text = 'Ok', command = registration_success_destroy)
-    
-    error_label.pack()
-    ok_button.pack()\
+class AppointmentRegistrationSuccessWindow(RegistrationSuccess):
+    def __init__(self, success_message):
+        self.success_message = success_message
+
+    def display_success(self):
+        global success_main
+        success_main = tk.CTkToplevel()
+        success_main.attributes('-topmost', True)
+        success_main.title('Success')
+        success_main.geometry('200x100')
         
+        error_label = tk.CTkLabel(success_main, text = 'Registration Success')
+        ok_button = tk.CTkButton(success_main, text = 'Ok', command = registration_success_destroy)
+        
+        error_label.pack()
+        ok_button.pack()\
+            
 def registration_success_destroy():
     success_main.destroy()
 
@@ -207,8 +238,10 @@ def pending_appointments():
     global acceptedapts
     mycur.execute('SELECT patient_code FROM patienttbl WHERE patient_username = ' + '\'' + paun_verify + '\'')
     nyenye = mycur.fetchall()
-    for row in nyenye:
-            ptnt_code = ''.join(row)  
+    
+    for row  in nyenye:
+        ptnt_code = ''.join(row)
+
     mycur.execute('SELECT a.apt_req_code, p.patient_lastname, p.patient_firstname, d.doctor_lastname, d.doctor_firstname, a.apt_date, a.apt_time FROM appointmentstbl a INNER JOIN patienttbl p ON a.patient_code = p.patient_code INNER JOIN doctortbl d ON a.doctor_code = d.doctor_code WHERE a.patient_code = ' + '\'' + ptnt_code + '\'')
     acceptedapts = mycur.fetchall()
     
