@@ -207,11 +207,9 @@ def pending_appointments():
     global acceptedapts
     mycur.execute('SELECT patient_code FROM patienttbl WHERE patient_username = ' + '\'' + paun_verify + '\'')
     nyenye = mycur.fetchall()
-    
-    for row  in nyenye:
-        ptnt_code = ''.join(row)
-
-    mycur.execute('SELECT a.apt_req_code, p.patient_lastname, p.patient_firstname, d.doctor_lastname, d.doctor_firstname, a.apt_date, a.apt_time FROM appointmentstbl a INNER JOIN patienttbl p ON a.patient_code = p.patient_code INNER JOIN doctortbl d ON a.doctor_code = d.doctor_code WHERE a.patient_code = ' + '\'' + ptnt_code + '\'')
+    for row in nyenye:
+            ptnt_code = ''.join(row)  
+    mycur.execute('SELECT a.apt_req_code, p.patient_lastname, p.patient_firstname, d.doctor_lastname, d.doctor_firstname, a.apt_date, a.apt_time FROM appointmentstbl a INNER JOIN patienttbl p ON a.patient_code = p.patient_code INNER JOIN doctortbl d ON a.doctor_code = d.doctor_code WHERE a.patient_username = ' + '\'' + ptnt_code + '\'')
     acceptedapts = mycur.fetchall()
     
    
