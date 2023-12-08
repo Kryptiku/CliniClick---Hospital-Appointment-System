@@ -108,7 +108,7 @@ def patient_registration():
     global registration_main
     
     registration_main = tk.CTkToplevel(main_screen)
-    # registration_main.attributes('-topmost', True)
+    registration_main.attributes('-topmost', True)
     registration_main.title('Registration Portal')
     window_width = 500
     window_height = 720
