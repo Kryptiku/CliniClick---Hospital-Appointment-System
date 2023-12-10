@@ -499,5 +499,4 @@ def acceptedapt_current_treeview():
     for row in pbe.acceptedapts:
         acctree.insert("", "end", values=row)
 
-
 base_screen()

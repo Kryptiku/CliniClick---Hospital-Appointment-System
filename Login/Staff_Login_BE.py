@@ -189,6 +189,3 @@ def enter_done(diagnosis, meds, dosage, frequency):
     mycur.execute("SELECT * FROM patienthistorytbl")
     wow = mycur.fetchall()
     print(wow)
-
-    
-    
