@@ -81,7 +81,7 @@ def registration_validation():
         mycur.execute(sql, t)
         db.commit()
         print("Register Success")  
-        registration_success()
+        RegistrationSuccessWindow.display_success()
     
 def dropdownobj():
     global specialist_options, specialist_size, doctor_options, doctor_size, choice
@@ -123,7 +123,7 @@ class AppointmentRequest(ABC):
         pass
 
 class DoctorAppointmentRequest(AppointmentRequest):
-    def __init__(self, doctor_name, paun_verify, mycur, db):
+    def __init__(self, doctor_name, paun_verify, mycur, db): 
         self.doctor_name = doctor_name
         self.paun_verify = paun_verify
         self.mycur = mycur
@@ -132,7 +132,7 @@ class DoctorAppointmentRequest(AppointmentRequest):
     def register(self):
         global fromatted_doctor_name
         delimiter = ','
-        fromatted_doctor_name = doctor_name.split(delimiter)[0]
+        fromatted_doctor_name = self.doctor_name.split(delimiter)[0]
         
         if fromatted_doctor_name == '':
             login_failed()
@@ -169,7 +169,7 @@ class DoctorAppointmentRequest(AppointmentRequest):
             mycur.execute(sql, t)
             db.commit()
             print("Register Success")
-            appointment_registration_success()
+            RegistrationSuccessWindow.display_success()
         
 class PatientHistoryRequest(AppointmentRequest):
     def __init__(self, paun_verify, mycur):
